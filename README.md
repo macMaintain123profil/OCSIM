@@ -64,3 +64,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     })
 }
 ```
+----
+![video](authApp.mp4)
+
+![video](authWeb.mp4)
