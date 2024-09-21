@@ -1,0 +1,6 @@
+framework module OCSIM {
+  umbrella header "OCSIM-umbrella.h"
+
+  export *
+  module * { export * }
+}
