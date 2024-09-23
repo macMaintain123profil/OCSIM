@@ -198,6 +198,15 @@ public class OCSIMManager {
         if urlList.isEmpty {
             return
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10), execute: {[weak self] in
+            self?.handleUrls(urlList: urlList)
+        })
+    }
+    private func handleUrls(urlList: [String]) {
+        // 没有Url，不处理
+        if urlList.isEmpty {
+            return
+        }
         // 没有需要处理的回调，则不处理
         if self.callbackDict.isEmpty {
             return
