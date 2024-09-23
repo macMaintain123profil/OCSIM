@@ -18,13 +18,31 @@ public class OCSIMManager {
         case app68
         case app4e
         
-        var scheme: String {
+        func scheme(page: Page) -> String {
+            switch page {
+            case .auth, .authWithCustomUrl:
+                return self.authScheme
+            default:
+                return self.normalScheme
+            }
+        }
+        var normalScheme: String {
             switch self {
             case .app68:
                 return "octopusim"
             case .app4e:
                 return "4echatim"
             }
+        }
+        var authScheme: String {
+            // 虽然使用通用scheme也可以拉起App，但是可能是低版本，特地增加这个scheme，用于判断是否为不支持授权的低版本
+            switch self {
+            case .app68:
+                return "CustomOctopusIMAuth"
+            case .app4e:
+                return "Custom4ECHATIMAuth"
+            }
+            
         }
         var officialSite: String {
             switch self {
@@ -144,7 +162,7 @@ public class OCSIMManager {
     public func jump(app: AppType = .app68, env: EnvType = .pro, goTo page: Page, handler: OSIMCallbackClouruse? = nil) {
         // 组装跳转地址
         let (pagePath, callbackUrl) = page.pagePath
-        var urlPath = "\(app.scheme)\(env.envPath)/\(pagePath)"
+        var urlPath = "\(app.scheme(page: page))\(env.envPath)/\(pagePath)"
         // 拼接回调地址
         if let callbackUrl = callbackUrl, callbackUrl.count > 0 {
             urlPath = OCSIMManager.addUrlParam(urlStr: urlPath, key: "callback", val: callbackUrl)
@@ -159,7 +177,7 @@ public class OCSIMManager {
                 // 如果urlPath正确，且已安装App，则直接打开App
                 UIApplication.shared.open(url, options: [:], completionHandler: { [weak self] result in
                     if result == false {
-                        // 可能没有下载App，去官网下载
+                        // 可能没有下载App、或者App版本过低还没有支持该scheme，去官网下载
                         self?.jumpToWebSite(app: app)
                     }
                     print("url: \(url) result: \(result)")
