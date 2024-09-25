@@ -38,9 +38,9 @@ public class OCSIMManager {
             // 虽然使用通用scheme也可以拉起App，但是可能是低版本，特地增加这个scheme，用于判断是否为不支持授权的低版本
             switch self {
             case .app68:
-                return "CustomOctopusIMAuth"
+                return "CustomOctopusAuth"
             case .app4e:
-                return "Custom4ECHATIMAuth"
+                return "Custom4ECHATAuth"
             }
             
         }
