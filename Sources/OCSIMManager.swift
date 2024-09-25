@@ -132,7 +132,7 @@ public class OCSIMManager {
                     customCallUrl = "osimbk-\(clientId)://authsuccess"
                 }
                 // 保证每个回调地址都有区别
-                return ("page/auth?clientId=\(clientId)", ["redirectUri": redirectUri ?? "", "callUrl": customCallUrl])
+                return ("page/auth?clientId=\(clientId)", ["redirectUri": redirectUri ?? "", "callbackUrl": customCallUrl])
             case .otc(let type, let subType, let coinName):
                 // 进入otc页面
                 var path = "page/otc?type=\(type.typeCode)"
@@ -165,9 +165,9 @@ public class OCSIMManager {
         // 拼接回调地址
         for (key, val) in (urlParams ?? [:]) {
             if val.count > 0 {
-                urlPath = OCSIMManager.addUrlParam(urlStr: urlPath, key: key, val: val)
+                urlPath = UrlTool.appendUrlParam(urlStr: urlPath, key: key, val: val)
                 // 如果有回调block，记录回调
-                if key == "callUrl", let handler = handler {
+                if key == "callbackUrl", let handler = handler {
                     self.callbackDict[val] = handler
                 }
             }
@@ -255,7 +255,7 @@ public class OCSIMManager {
             return
         }
         // 解析url上的参数
-        var urlParams: [String: String] = urlParams(urlStr)
+        var urlParams: [String: String] = UrlTool.urlParams(urlStr)
         urlParams["_originUrl"] = urlStr
         for key in keyList {
             // 执行回调
@@ -265,13 +265,46 @@ public class OCSIMManager {
         }
     }
     
-    // MARK: - URL Tool
-    // MARK: 解析url里的参数
-    private func urlParams(_ urlStr: String) -> [String: String] {
-        let (changeUrl, subDict) = subUrlList(urlStr)
-        // http://xx/aa?b=123&q1=https://xxx.yy/a?aa1=b&aa2=c&q2=okt://aa/b?d=dd&d2=ddd
+}
+// MAKR: - UrlTool
+public class UrlTool {
+    public static func test() {
+        let path1 = "http://www.appleX.com/info?name=balana&age=18" // 简单的标准url
+        let path2 = "http://www.appleX.com/info?name=balana&age=18&callback=http://www.googleY.com&type=friend" // 子url在中间
+        let path3 = "http://xx/aa?year=123&q1=https://xxx.yy/a?aa1=b&aa2=c&q2=fly://aa/b?d=dd&d2=ddd" // 子url在后面，且子url也自带自己的参数
+        let path4 = "http://xx/aa?b=123&q1=https://xxx.yy/a?aa1=b&aa2=c&xx=wx://a&x=1&y=2&q2=sky://aa/b?d=dd&d2=ddd" // 子url与父参数混杂
+        let param1 = UrlTool.urlParams(path1)
+        let param2 = UrlTool.urlParams(path2)
+        let param3 = UrlTool.urlParams(path3)
+        let param4 = UrlTool.urlParams(path4)
+        print(path1)
+        print(param1)
+        print(path2)
+        print(param2)
+        print(path3)
+        print(param3)
+        print(path4)
+        print(param4)
+    }
+    public static func urlParams(url: URL?) -> [String: String] {
+        guard let urlStr = url?.absoluteString, urlStr.count > 0 else {
+            return [:]
+        }
+        return UrlTool.urlParams(urlStr)
+    }
+    // MARK: 提取URL里的全部参数
+    public static func urlParams(_ urlStr: String?) -> [String: String] {
+        // "http://www.appleX.com/info?name=balana&age=18" // 简单的标准url
+        // "http://www.appleX.com/info?name=balana&age=18&callback=http://www.googleY.com&type=friend" // 子url在中间
+        // "http://xx/aa?year=123&q1=https://xxx.yy/a?aa1=b&aa2=c&q2=fly://aa/b?d=dd&d2=ddd" // 子url在后面，且子url也自带自己的参数
+        // "http://xx/aa?b=123&q1=https://xxx.yy/a?aa1=b&aa2=c&xx=wechat://a&x=1&y=2&q2=sky://aa/b?d=dd&d2=ddd" // 子url与父参数混杂
+        guard let urlStr = urlStr, urlStr.count > 0 else {
+            return [:]
+        }
+        // 找出字url，以及跟子url混杂在一起的参数，以及主url
+        let (changeUrl, subDict) = UrlTool.subUrlList(urlStr: urlStr)
         // 防止一个url里有多个子url，所以要按scheme进行拆分，
-        let findDict = realUrlParams(changeUrl)
+        let findDict = UrlTool.mainUrlParams(urlStr: changeUrl)
         var fullDict: [String: String] = [:]
         for (key, val) in subDict {
             fullDict[key] = val
@@ -281,8 +314,8 @@ public class OCSIMManager {
         }
         return fullDict
     }
-    // MARK: 解析url的子url
-    private func subUrlList(_ urlStr: String) -> (String, [String: String]) {
+    // MARK: - 找出子URL的列表
+    private static func subUrlList(urlStr: String) -> (String, [String: String]) {
         var paramStr = urlStr
         var pramsDict = [String: String]()
         // http://xx/aa?b=123&q1=https://xxx.yy/a?aa1=b&aa2=c&q2=okt://aa/b?d=dd&d2=ddd
@@ -308,7 +341,7 @@ public class OCSIMManager {
                     nextKey = ""
                     nextScheme = ""
                 } else {
-                   let (findUrl, key, scheme) = findLastParamSeparator(str)
+                   let (findUrl, key, scheme) = UrlTool.realFindSubUrlKeyAndScheme(str: str)
                    let fullStr = "\(nextScheme)://\(findUrl)"
                    paramsStrList.append((nextKey, fullStr))
                    nextKey = key
@@ -322,36 +355,60 @@ public class OCSIMManager {
                 if idx == 0 {
                     paramStr = url
                 } else {
-                    pramsDict[key] = url
+                    // 需要对url检查参数拆分
+                    // http://www.baidu.com/page?name=aa&age=bb
+                    // http://www.baidu.com/page&name=aa&age=bb --- 没有?的，后面的参数属于父级的
+                    if url.contains("?") == false,
+                       url.contains("&"),
+                       url.contains("=") {
+                        // 存在父类的参数
+                        let urlWithSuperParamList = url.components(separatedBy: "&")
+                        for (idx, urlItem) in urlWithSuperParamList.enumerated() {
+                            if idx == 0 {
+                                pramsDict[key] = urlItem
+                            } else {
+                                let kvList = urlItem.components(separatedBy: "=")
+                                if kvList.count == 2 {
+                                    let paramKey = kvList[0]
+                                    let paramVal = kvList[1]
+                                    pramsDict[paramKey] = paramVal
+                                }
+                            }
+                        }
+                    } else {
+                        pramsDict[key] = url
+                    }
+                    
                 }
             }
         }
         return (paramStr, pramsDict)
     }
-    private func findLastParamSeparator(_ urlStr: String) -> (String, String, String) {
+    // 通过scheme的标志前一个子url的内容，以及后一个子url的key和scheme
+    private static func realFindSubUrlKeyAndScheme(str: String) -> (String, String, String) {
         // xx/aa?b=123&q1=https -> 找出q1的位置
         // xx/aa?q1=https -> 找出q1的位置
-        let schemeList = urlStr.components(separatedBy: "=")
+        let schemeList = str.components(separatedBy: "=")
         let scheme = schemeList.last ?? ""
-        let preList = imSubArray(schemeList, from: 0, size: schemeList.count - 1)
+        let preList = UrlTool.subArray(schemeList, from: 0, size: schemeList.count - 1)
         // xx/aa?b=123&q1 -> 找出q1的位置
         // xx/aa?q1 -> 找出q1的位置
         let prSchemeStr = preList.joined(separator: "=")
         let charList = prSchemeStr.map{ String($0) }
-        let chatCount: Int = charList.count
+        let chatCount = charList.count
         for i in (0..<chatCount) {
             let findI = chatCount - i - 1
             let charStr = charList[findI]
             if charStr == "?" || charStr == "&" {
-                let preUrlStr = imSubArray(charList, from: 0, size: findI).joined()
-                let keyStr = imSubArray(charList, from: findI+1, to: chatCount-1).joined()
+                let preUrlStr = UrlTool.subArray(charList, from: 0, size: findI).joined()
+                let keyStr = UrlTool.subArray(charList, from: findI+1, to: chatCount-1).joined()
                 return (preUrlStr, keyStr, scheme)
             }
         }
-        return (urlStr, "", scheme)
+        return (str, "", scheme)
     }
-    // MARK: 解析普通url里的参数
-    private func realUrlParams(_ urlStr: String) -> [String: String] {
+        // MARK: - 截取主URL上的参数
+    private static func mainUrlParams(urlStr: String) -> [String: String] {
         var paramStr = urlStr
         if urlStr.contains("?") {
             let urlList = urlStr.components(separatedBy: "?")
@@ -360,7 +417,7 @@ public class OCSIMManager {
                 paramStr = urlList.last ?? ""
             } else if urlList.count > 2 {
                 let preStr = urlList.first ?? ""
-                paramStr = subString(paramStr, from: preStr.count+1)
+                paramStr = UrlTool.subString(paramStr, from: preStr.count+1)
             }
         }
         // http:xx/aa?q1=https://xxx.yy/a?aa1=b&aa2=c&q2=okt://aa/b?d=dd&d2=ddd
@@ -370,7 +427,7 @@ public class OCSIMManager {
             if subUrlList.count == 2 {
                 let paramNormalList = paramStr.components(separatedBy: "=")
                 let key = paramNormalList.first ?? ""
-                let val = subString(paramStr, from: key.count+1)
+                let val = UrlTool.subString(paramStr, from: key.count+1)
                 return [key: val]
             } else if subUrlList.count > 2 {
                 // 有多个字url
@@ -386,8 +443,32 @@ public class OCSIMManager {
         }
         return pramsDict
     }
-    // MARK: subString方法
-    private func subString(_ str: String, from: Int) -> String {
+
+    // MARK: - 给URL添加参数
+    public static func appendUrlParam(urlStr: String, key: String, val: String) -> String {
+        if urlStr.contains("?") == false {
+            return "\(urlStr)?\(key)=\(val)"
+        } else {
+            return "\(urlStr)&\(key)=\(val)"
+        }
+    }
+    public static func appendUrlParam(urlStr: String, paramsList: [(String,String)]) -> String {
+        var urlPath = urlStr
+        for (key, val) in paramsList {
+            urlPath = UrlTool.appendUrlParam(urlStr: urlPath, key: key, val: val)
+        }
+        return urlPath
+    }
+    public static func appendUrlParams(urlStr: String, paramsDict: [String: String]) -> String {
+        var urlPath = urlStr
+        for (key, val) in paramsDict {
+            urlPath = UrlTool.appendUrlParam(urlStr: urlPath, key: key, val: val)
+        }
+        return urlPath
+    }
+    
+    // MARK: - subString方法
+    private static func subString(_ str: String, from: Int) -> String {
         let fromOffset = from
         if from > str.count {
             return ""
@@ -398,12 +479,13 @@ public class OCSIMManager {
         let endIndex = str.index(str.startIndex, offsetBy: toOffset)
         return String(str[startIndex..<endIndex])
     }
-    // MARK: Array方法
-    private func imSubArray(_ list: [String], from: Int, size: Int) -> Array<String> {
-        return self.imSubArray(list, from: from, to: from+size-1)
+    
+    // MARK: - subArray方法
+    private static func subArray(_ list: [String], from: Int, size: Int) -> Array<String> {
+        return self.subArray(list, from: from, to: from+size-1)
     }
     
-    private func imSubArray(_ list: [String], from: Int, to: Int) -> Array<String> {
+    private static func subArray(_ list: [String], from: Int, to: Int) -> Array<String> {
         // 包含from, 包含to
         let maxTo = list.count - 1
         if from > maxTo {
@@ -417,14 +499,5 @@ public class OCSIMManager {
             return []
         }
         return Array(list[from...toIndex])
-    }
-    private static func addUrlParam(urlStr: String, key: String, val: String) -> String {
-        if urlStr.contains("?"), urlStr.contains("=") {
-            // 之前有参数
-            return "\(urlStr)&\(key)=\(val)"
-        } else {
-            // 之前没有参数
-            return "\(urlStr)?\(key)=\(val)"
-        }
     }
 }
