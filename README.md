@@ -9,15 +9,22 @@ OCSIM
 - 其他功能
 
 ### 重点介绍授权功能
-##### 1、找相关人员申请`appKey`
-
-#### 2、引入SDK
-#### 2.1 方式一：直接将`OCSIMManager.swift`拖到项目里,参考`Example`
-#### 2.2 方式二：使用`cocoapod`的方式引入，参考`ExamplePod`
-#### 2.3 方式三：使用`spm`的方式引入
-
-#### 3、在项目的Info.plist里设置一个scheme，如果项目里已经有scheme，可以忽略此步骤，该scheme主要用于下面第5步，用于授权成功后自动返回当前app使用
+#### 1、在项目的Info.plist里设置一个scheme，如果项目里已经有scheme，可以忽略此步骤，该scheme主要用于下面第2步注册clientId，也用于第4步授权成功后自动返回当前app使用
 ![step3](step3_scheme.png)
+
+
+##### 2、找相关人员申请`clientId`
+申请clientId需要填写：
+1、App的名称（用于在授权页面、授权列表、授权详情页面展示）
+2、App的logo（用于在授权页面、授权列表、授权详情页面展示）
+3、回调地址（必须是自己App支持的scheme，后续用于后端参数校验，用于App授权成功后回到自己的App）
+
+#### 3、引入SDK
+#### 3.1 方式一：直接将`OCSIMManager.swift`拖到项目里,参考`Example`
+#### 3.2 方式二：使用`cocoapod`的方式引入，参考`ExamplePod`
+#### 3.3 方式三：使用`spm`的方式引入
+
+
 
 #### 4、在AppDelegate里设置接收URL的回调处理，参考如下：
 `SceneDelegate.swift`
@@ -58,7 +65,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // 默认跳转到68、生产环境
     // appKey: 为第1步找相关人员申请到的值
     // callbackUrl: 为3布配置的scheme或已有的scheme
-    OCSIMManager.shared.jump(goTo: .authWithCustomUrl(appKey: "xxxx", callbackUrl: "xxxx://"), handler: {[weak self] dict in
+    OCSIMManager.shared.jump(goTo: .auth(clientId: "xxxx", redirectUri: "xxxx://"), handler: {[weak self] dict in
         self?.codeLabel.text = "授权code：\(dict["code"]  ?? "")"
         print(dict)
     })

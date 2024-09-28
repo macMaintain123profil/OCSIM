@@ -115,7 +115,7 @@ class FullDemoVC: BaseDemoVC {
                 return
             }
             // 方式一（推荐，合适app里已经定义过scheme的场景），传入自定义的sheme
-            OCSIMManager.shared.jump(app: appType, env: envType, goTo: .authWithCustomUrl(clientId: clientId, redirectUri: "", callbackUrl: "osimSamlePod://"), handler: {[weak self] dict in
+            OCSIMManager.shared.jump(app: appType, env: envType, goTo: .auth(clientId: clientId, redirectUri: ""), handler: {[weak self] dict in
                 self?.codeLabel.text = "授权code：\(dict["code"]  ?? "")"
                 print(dict)
             })

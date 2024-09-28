@@ -51,6 +51,28 @@ class AuthDemoVC: BaseDemoVC {
         btn.backgroundColor = btnColor
         btn.addTarget(self, action: #selector(btnClick), for: .touchUpInside)
         self.view.addSubview(btn)
+        
+        let infoDictionary = Bundle.main.infoDictionary
+        var urlSchemeList: [String] = []
+        if let urlTypes = infoDictionary?["CFBundleURLTypes"] as? [[String: Any]], urlTypes.count > 0 {
+            for urlType in urlTypes {
+                if let urlSchemes = urlType["CFBundleURLSchemes"] as? [String] {
+                    urlSchemeList.append(contentsOf: urlSchemes)
+                }
+            }
+        }
+        let schemeLabel = UILabel()
+        schemeLabel.textColor = .black
+        schemeLabel.font = UIFont.systemFont(ofSize: 14)
+        schemeLabel.frame = CGRect(x: 10, y: (btn.frame.maxY + 10), width: 300, height: 100)
+        schemeLabel.numberOfLines = 0
+        if urlSchemeList.count > 0 {
+            schemeLabel.text = "当前App配置的scheme：\n\n\(urlSchemeList.map({"\($0)://"}).joined(separator: "\n"))"
+        } else {
+            schemeLabel.text = "当前App还没配置任何scheme"
+        }
+        
+        self.view.addSubview(schemeLabel)
     }
     
     @objc func btnClick() {

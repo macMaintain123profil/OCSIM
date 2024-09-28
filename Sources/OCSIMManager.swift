@@ -20,7 +20,7 @@ public class OCSIMManager {
         
         func scheme(page: Page) -> String {
             switch page {
-            case .auth, .authWithCustomUrl:
+            case .auth:
                 return self.authScheme
             default:
                 return self.normalScheme
@@ -104,7 +104,6 @@ public class OCSIMManager {
         case identify(identify: String) // 跳转XX号添加好友（已经是好友直接进入单聊页面）
         case groupShareLink(groupShareLink: String) // 通过群分享链加入群（如果已经在群里直接进入群）
         case groupAlianName(groupAlianName: String) // 通过群别名跳转加入群（如果已经在群里直接进入群）
-        case authWithCustomUrl(clientId: String, redirectUri: String? = nil, callbackUrl: String?) // 去授权
         case auth(clientId: String, redirectUri: String? = nil) // 去授权
         case otc(type: OTCType, subType: OTCSubType? = nil, coinName: String? = nil) // 进入OTC功能页面
         
@@ -119,20 +118,10 @@ public class OCSIMManager {
             case .groupAlianName(let alianName):
                 // 群别名
                 return ("page/atLink?words=\(alianName)", nil)
-            case .auth(let clientId, let callbackUrl):
-                return Page.authWithCustomUrl(clientId: clientId, redirectUri: nil, callbackUrl: callbackUrl).pagePath
-            case .authWithCustomUrl(let clientId, let redirectUri, let customCallbackUrl):
+            case .auth(let clientId, let redirectUri):
                 // 进入授权页面
-                var customCallUrl = ""
-                if let customCallbackUrl = customCallbackUrl, customCallbackUrl.count > 0 {
-                    // 自定义的配置的scheme,这个一定要在Info.plist的URL里配置，不然授权成功后没法再拉起自己的App
-                    customCallUrl = customCallbackUrl
-                } else {
-                    // 使用默认的配置的scheme,这个一定要在Info.plist的URL里配置，不然授权成功后没法再拉起自己的App
-                    customCallUrl = "osimbk-\(clientId)://authsuccess"
-                }
                 // 保证每个回调地址都有区别
-                return ("page/auth?clientId=\(clientId)", ["redirectUri": redirectUri ?? "", "callbackUrl": customCallUrl])
+                return ("page/auth?clientId=\(clientId)", ["redirectUri": redirectUri ?? ""])
             case .otc(let type, let subType, let coinName):
                 // 进入otc页面
                 var path = "page/otc?type=\(type.typeCode)"
@@ -167,7 +156,7 @@ public class OCSIMManager {
             if val.count > 0 {
                 urlPath = UrlTool.appendUrlParam(urlStr: urlPath, key: key, val: val)
                 // 如果有回调block，记录回调
-                if key == "callbackUrl", let handler = handler {
+                if key == "redirectUri", let handler = handler {
                     self.callbackDict[val] = handler
                 }
             }
