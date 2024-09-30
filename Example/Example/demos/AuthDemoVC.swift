@@ -35,10 +35,17 @@ class AuthDemoVC: BaseDemoVC {
         field2.frame = CGRectMake(10, field.frame.maxY + 20, 300, 30)
         field2.backgroundColor = .white
         self.view.addSubview(field2)
+        let demoLabel = UILabel()
+        demoLabel.textColor = .black
+        demoLabel.font = UIFont.systemFont(ofSize: 14)
+        demoLabel.frame = CGRect(x: 10, y: (field2.frame.maxY + 10), width: 300, height: 20)
+        demoLabel.numberOfLines = 0
+        demoLabel.text = "redirectUri格式： xxx://yyy"
+        self.view.addSubview(demoLabel)
 
         codeLabel.textColor = .black
         codeLabel.font = UIFont.systemFont(ofSize: 12)
-        codeLabel.frame = CGRect(x: 10, y: (field2.frame.maxY + 10), width: 300, height: 100)
+        codeLabel.frame = CGRect(x: 10, y: (demoLabel.frame.maxY + 10), width: 300, height: 100)
         codeLabel.numberOfLines = 0
         codeLabel.text = "授权code：--"
         self.view.addSubview(codeLabel)

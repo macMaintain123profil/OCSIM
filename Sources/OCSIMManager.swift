@@ -121,7 +121,7 @@ public class OCSIMManager {
             case .auth(let clientId, let redirectUri):
                 // 进入授权页面
                 // 保证每个回调地址都有区别
-                return ("page/auth?clientId=\(clientId)", ["redirectUri": redirectUri ?? ""])
+                return ("page/auth?clientId=\(clientId)", ["redirectUri": redirectUri?.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""])
             case .otc(let type, let subType, let coinName):
                 // 进入otc页面
                 var path = "page/otc?type=\(type.typeCode)"
@@ -151,6 +151,26 @@ public class OCSIMManager {
         // 组装跳转地址
         let (pagePath, urlParams) = page.pagePath
         var urlPath = "\(app.scheme(page: page))\(env.envPath)/\(pagePath)"
+        switch page {
+        case .auth(let _, let redirectUri):
+            let urlStr = redirectUri?.trimmingCharacters(in: .whitespaces) ?? ""
+            if urlStr.count == 0 {
+                print("必须要包含协议头和路径xxx://xxx")
+                return
+            }
+            let list = urlStr.components(separatedBy: "://")
+            if list.count <= 1 {
+                print("必须要包含协议头和路径xxx://xxx")
+                return
+            }
+            if list.count == 2, (list.last ?? "").count == 0 {
+                print("必须要包含协议头和路径xxx://xxx")
+                return
+            }
+            break
+        default:
+            break
+        }
         // 拼接回调地址
         for (key, val) in (urlParams ?? [:]) {
             if val.count > 0 {
