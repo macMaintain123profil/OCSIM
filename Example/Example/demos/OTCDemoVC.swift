@@ -37,7 +37,7 @@ class OTCDemoVC: BaseDemoVC {
         field.textColor = .black
         field.frame = CGRectMake(10, subTypeBtnMaxY + 20, 300, 30)
         field.backgroundColor = .white
-        self.view.addSubview(field)
+        self.baseContentView.addSubview(field)
 
       
         let btn = UIButton(type: .custom)
@@ -47,7 +47,9 @@ class OTCDemoVC: BaseDemoVC {
         btn.frame = CGRectMake(10, (field.frame.maxY + 20), 300, 40)
         btn.backgroundColor = btnColor
         btn.addTarget(self, action: #selector(btnClick), for: .touchUpInside)
-        self.view.addSubview(btn)
+        self.baseContentView.addSubview(btn)
+        
+        self.updateMaxContentSize()
     }
     
     @objc func btnClick() {

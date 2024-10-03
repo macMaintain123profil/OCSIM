@@ -8,6 +8,20 @@
 import UIKit
 
 class BaseDemoVC: UIViewController {
+    lazy var baseScrollView: UIScrollView = {
+        let scrollView = UIScrollView(frame: UIScreen.main.bounds)
+        scrollView.clipsToBounds = true
+        scrollView.clipsToBounds = true
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.keyboardDismissMode = .onDrag
+        if #available(iOS 12.0, *) {
+            scrollView.contentInsetAdjustmentBehavior = .never
+        }else {
+            self.automaticallyAdjustsScrollViewInsets = false
+        }
+        return scrollView
+    }()
+    lazy var baseContentView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*2))
     var appBtnList: [UIButton] = []
     var envBtnList: [UIButton] = []
     var btnColor: UIColor {
@@ -24,23 +38,38 @@ class BaseDemoVC: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
+        view.insertSubview(baseScrollView, at: 0)
+        baseScrollView.addSubview(baseContentView)
+        baseScrollView.contentSize = baseContentView.bounds.size
+        
         topLabel.textColor = .black
         topLabel.textAlignment = .center
         topLabel.frame = CGRect(x: 0, y: 100, width: UIScreen.main.bounds.width, height: 30)
-        self.view.addSubview(topLabel)
+        baseContentView.addSubview(topLabel)
         
-        appBtnList = self.createSelectBtns(y: 140, btnW: 60, tips: "选择要跳转的app类型", list:
+        appBtnList = self.createSelectBtns(y: 150, btnW: 60, tips: "选择要跳转的app类型", list:
                                             [(OCSIMManager.AppType.app68.rawValue,"68"),
                                              (OCSIMManager.AppType.app4e.rawValue,"4e")])
         
         envBtnList = self.createSelectBtns(y: (appBtnList.first?.frame.maxY ?? 0 + 10), btnW: 100, tips: "选择要跳转的环境类型", list:
                                             [(OCSIMManager.EnvType.pro.rawValue,"线上环境"),
                                              (OCSIMManager.EnvType.uat.rawValue,"UAT环境"),
-                                             (OCSIMManager.EnvType.test.rawValue,"测试环境")])
+                                             (OCSIMManager.EnvType.test.rawValue,"测试环境")], defaultIdx: 2)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapView))
-        self.view.addGestureRecognizer(tap)
+        self.baseContentView.addGestureRecognizer(tap)
         
+    }
+    
+    func updateMaxContentSize() {
+        var maxY: CGFloat = 0
+        for v in self.baseContentView.subviews {
+            if v.frame.maxY > maxY {
+                maxY = v.frame.maxY
+            }
+        }
+        self.baseContentView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: max(UIScreen.main.bounds.height, maxY + 30))
+        self.baseScrollView.contentSize = self.baseContentView.bounds.size
     }
     
     @objc func tapView() {
@@ -48,12 +77,12 @@ class BaseDemoVC: UIViewController {
     }
     
     // MARK: - 创建checkbox按钮
-    func createSelectBtns(y: CGFloat, btnW: CGFloat, tips: String, list: [(Int, String)]) -> [UIButton] {
+    func createSelectBtns(y: CGFloat, btnW: CGFloat, tips: String, list: [(Int, String)], defaultIdx: Int = 0) -> [UIButton] {
         
         let lbl = UILabel(frame: CGRect(x: 10, y: y, width: 200, height: 40))
         lbl.textColor = .black
         lbl.text = tips
-        self.view.addSubview(lbl)
+        self.baseContentView.addSubview(lbl)
         let count = list.count
         var preView: UIView = lbl
         var btnList: [UIButton] = []
@@ -68,17 +97,19 @@ class BaseDemoVC: UIViewController {
             btn.setTitleColor(.black, for: .normal)
             var btnX: CGFloat = 10
             if idx == 0 {
-                btn.isSelected = true
                 btnX = 10
             } else {
                 btnX = preView.frame.maxX + 10
+            }
+            if idx == defaultIdx {
+                btn.isSelected = true
             }
             btn.frame = CGRectMake(btnX, y+40, btnW, 30)
             
             btn.setImage(UIImage(named: "check_unselected"), for: .normal)
             btn.setImage(UIImage(named: "check_selected"), for: .selected)
             btn.addTarget(self, action: #selector(selectBtnClick(sender:)), for: .touchUpInside)
-            self.view.addSubview(btn)
+            self.baseContentView.addSubview(btn)
             btnList.append(btn)
             preView = btn
         }

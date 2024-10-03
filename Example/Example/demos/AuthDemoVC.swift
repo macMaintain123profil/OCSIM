@@ -9,9 +9,22 @@ import UIKit
 
 class AuthDemoVC: BaseDemoVC {
    
-    var codeLabel = UILabel()
+    var resultLabel = UILabel()
     var field = UITextField()
     var field2 = UITextField()
+    let demoLabel = UILabel()
+    let btn = UIButton(type: .custom)
+    let cpBtn = UIButton(type: .custom)
+    let schemeLabel = UILabel()
+    
+    // 生成的随机数，用于后续发送到自己的后端请求accessToken
+    var codeVerifier: String = ""
+    // 生成的随机数使用sha156加密后请求三方登录
+    var codeChallenge: String = ""
+    // 三方登录授权成功后返回的code，用于后续发送到自己的后端请求accessToken
+    var code: String = ""
+    // 模拟使用codeVerifier+code请求自己的后端得到的accessToken
+    var accessToken: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +38,7 @@ class AuthDemoVC: BaseDemoVC {
         field.textColor = .black
         field.frame = CGRectMake(10, envBtnMaxY + 20, 300, 30)
         field.backgroundColor = .white
-        self.view.addSubview(field)
+        self.baseContentView.addSubview(field)
         
         field2.borderStyle = .roundedRect
         field2.layer.borderWidth = 1.0
@@ -34,30 +47,37 @@ class AuthDemoVC: BaseDemoVC {
         field2.textColor = .black
         field2.frame = CGRectMake(10, field.frame.maxY + 20, 300, 30)
         field2.backgroundColor = .white
-        self.view.addSubview(field2)
-        let demoLabel = UILabel()
+        self.baseContentView.addSubview(field2)
+        
+        
         demoLabel.textColor = .black
         demoLabel.font = UIFont.systemFont(ofSize: 14)
         demoLabel.frame = CGRect(x: 10, y: (field2.frame.maxY + 10), width: 300, height: 20)
         demoLabel.numberOfLines = 0
         demoLabel.text = "redirectUri格式： xxx://yyy"
-        self.view.addSubview(demoLabel)
-
-        codeLabel.textColor = .black
-        codeLabel.font = UIFont.systemFont(ofSize: 12)
-        codeLabel.frame = CGRect(x: 10, y: (demoLabel.frame.maxY + 10), width: 300, height: 100)
-        codeLabel.numberOfLines = 0
-        codeLabel.text = "授权code：--"
-        self.view.addSubview(codeLabel)
+        self.baseContentView.addSubview(demoLabel)
         
-        let btn = UIButton(type: .custom)
+        resultLabel.textColor = .lightGray
+        resultLabel.font = UIFont.systemFont(ofSize: 14)
+        resultLabel.frame = CGRect(x: 10, y: (demoLabel.frame.maxY + 10), width: UIScreen.main.bounds.width-20, height: 350)
+        resultLabel.numberOfLines = 0
+        self.baseContentView.addSubview(resultLabel)
+        
         btn.setTitle("去三方授权", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.numberOfLines = 0
-        btn.frame = CGRectMake(10, (codeLabel.frame.maxY + 10), 300, 40)
+        btn.frame = CGRectMake(10, (resultLabel.frame.maxY + 10), 300, 40)
         btn.backgroundColor = btnColor
         btn.addTarget(self, action: #selector(btnClick), for: .touchUpInside)
-        self.view.addSubview(btn)
+        self.baseContentView.addSubview(btn)
+        
+        cpBtn.setTitle("复制信息", for: .normal)
+        cpBtn.setTitleColor(.black, for: .normal)
+        cpBtn.titleLabel?.numberOfLines = 0
+        cpBtn.frame = CGRectMake(10, (btn.frame.maxY + 10), 300, 40)
+        cpBtn.backgroundColor = btnColor
+        cpBtn.addTarget(self, action: #selector(cpBtnClick), for: .touchUpInside)
+        self.baseContentView.addSubview(cpBtn)
         
         let infoDictionary = Bundle.main.infoDictionary
         var urlSchemeList: [String] = []
@@ -68,10 +88,10 @@ class AuthDemoVC: BaseDemoVC {
                 }
             }
         }
-        let schemeLabel = UILabel()
+        
         schemeLabel.textColor = .black
         schemeLabel.font = UIFont.systemFont(ofSize: 14)
-        schemeLabel.frame = CGRect(x: 10, y: (btn.frame.maxY + 10), width: 300, height: 100)
+        schemeLabel.frame = CGRect(x: 10, y: (cpBtn.frame.maxY + 10), width: 300, height: 100)
         schemeLabel.numberOfLines = 0
         if urlSchemeList.count > 0 {
             schemeLabel.text = "当前App配置的scheme：\n\n\(urlSchemeList.map({"\($0)://"}).joined(separator: "\n"))"
@@ -79,16 +99,38 @@ class AuthDemoVC: BaseDemoVC {
             schemeLabel.text = "当前App还没配置任何scheme"
         }
         
-        self.view.addSubview(schemeLabel)
+        self.baseContentView.addSubview(schemeLabel)
+        
+        refreshUI()
+    }
+    
+    func refreshUI() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10), execute: {[weak self] in
+            guard let self = self else {
+                return
+            }
+            self.resultLabel.text = "codeVerifier：\(self.codeVerifier)\n\ncodeChallenge: \(self.codeChallenge)\n\ncode: \(self.code)\n\naccessToken: \(self.accessToken)"
+            let nStr = NSString(string: self.resultLabel.text ?? "")
+            let maxWdith = UIScreen.main.bounds.width-20
+            let maxSize = CGSize(width: maxWdith, height: CGFloat.greatestFiniteMagnitude)
+            let realHeight = nStr.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: self.resultLabel.font ?? UIFont.systemFont(ofSize: 14)], context: nil).size.height
+            self.resultLabel.frame = CGRect(x: 10, y: (self.demoLabel.frame.maxY + 10), width: maxWdith, height: realHeight)
+            self.btn.frame = CGRectMake(10, (self.resultLabel.frame.maxY + 10), 300, 40)
+            self.cpBtn.frame = CGRectMake(10, (self.btn.frame.maxY + 10), 300, 40)
+            self.schemeLabel.frame = CGRect(x: 10, y: (self.cpBtn.frame.maxY + 10), width: 300, height: 100)
+            
+            self.updateMaxContentSize()
+        })
     }
     
     @objc func btnClick() {
         let appType = OCSIMManager.AppType(rawValue: self.appBtnList.first(where: { $0.isSelected })?.tag ?? 0) ?? .app68
         let envType = OCSIMManager.EnvType(rawValue: self.envBtnList.first(where: { $0.isSelected })?.tag ?? 0) ?? .pro
 //        // 默认跳转到68、生产环境
-//        OCSIMManager.shared.jump(goTo: .authWithCustomUrl(appKey: appKey, redirectUri: redirectUri, callbackUrl: "TestMyApp://"), handler: {[weak self] dict in
-//            self?.codeLabel.text = "授权code：\(dict["code"]  ?? "")"
-//            print(dict)
+//        OCSIMManager.shared.jump(goTo: .auth(clientId: clientId, redirectUri: redirectUri), handler: {[weak self] dict in
+//          self?.code = dict["code"] ?? ""
+//          self?.refreshUI()
+//          self?.testReq()
 //        })
         let clientId = field.text ?? ""
         if clientId.count == 0 {
@@ -100,12 +142,92 @@ class AuthDemoVC: BaseDemoVC {
             self.view.makeToast("请输入redirectUri", position: .center)
             return
         }
-        // 方式一（推荐，合适app里已经定义过scheme的场景），传入自定义的sheme
-        OCSIMManager.shared.jump(app: appType, env: envType, goTo: .authWithCustomUrl(clientId: clientId, redirectUri: redirectUri, callbackUrl: "osimSamlePod://"), handler: {[weak self] dict in
-            self?.codeLabel.text = "授权code：\(dict["code"]  ?? "")"
-            print(dict)
+        // 模拟生成地址codeChallenge
+        let pk = OCSIMPKCE()
+        if pk.codeVerifier.count > 0 {
+            self.codeVerifier = pk.codeVerifier
+        }
+        if pk.codeChallenge.count > 0 {
+            self.codeChallenge = pk.codeChallenge
+        }
+        if self.codeVerifier.count <= 0 {
+            self.view.makeToast("codeChallenge为空", position: .center)
+            return
+        }
+        
+        OCSIMManager.shared.jump(app: appType, env: envType, goTo: .auth(clientId: clientId, codeChallenge: codeChallenge, redirectUri: redirectUri), handler: {[weak self] dict in
+            self?.code = dict["code"] ?? ""
+            self?.refreshUI()
+            self?.testReq()
         })
     }
     
+    @objc func cpBtnClick() {
+        UIPasteboard.general.string = self.resultLabel.text ?? ""
+        self.view.makeToast("复制成功", position: .center)
+    }
     
+    // MARK: 模拟使用codeVerifier+code请求自己的后端得到的accessToken
+    func testReq() {
+        let boundary = UUID().uuidString
+
+        // Create the URL
+        guard let url = URL(string: "http://172.16.20.24:8080/oauth2/token") else { return }
+
+        // Create a URLRequest object
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+        // Prepare the form data
+        var paramsDict: [String: String] = [:]
+        paramsDict["client_id"] = field.text ?? ""
+        paramsDict["code_verifier"] = codeVerifier
+        paramsDict["grant_type"] = "authorization_code"
+        paramsDict["redirect_uri"] = field2.text ?? ""
+        paramsDict["code"] = code
+
+        let httpBody = {
+            var body = Data()
+            for (rawName, rawValue) in paramsDict {
+                if !body.isEmpty {
+                    body.append("\r\n".data(using: .utf8)!)
+                }
+                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                let disposition = "Content-Disposition: form-data; name=\"\(rawName)\"\r\n".data(using: .utf8)!
+                body.append(disposition)
+                body.append("\r\n".data(using: .utf8)!)
+                let value = rawValue.data(using: .utf8)!
+                body.append(value)
+            }
+            body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+            return body
+        }()
+
+        request.httpBody = httpBody
+
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            if let error = error {
+                print("Error: \(error)")
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                print("Response Code: \(httpResponse.statusCode)")
+            }
+            if let data = data, let responseString = String(data: data, encoding: .utf8) {
+                print("Response Data: \(responseString)")
+                if let result = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    if let dataDict = result["data"] as? [String: Any] {
+                        let accessToken = dataDict["access_token"] as? String
+                        self?.accessToken = accessToken ?? ""
+                        self?.refreshUI()
+                        
+                    }
+                    print(result)
+                }
+            }
+        }
+        task.resume()
+
+    }
 }

@@ -20,7 +20,7 @@ class P2PDemoVC: BaseDemoVC {
         field.textColor = .black
         field.frame = CGRectMake(10, envBtnMaxY + 20, 300, 30)
         field.backgroundColor = .white
-        self.view.addSubview(field)
+        self.baseContentView.addSubview(field)
 
       
         let btn = UIButton(type: .custom)
@@ -30,7 +30,9 @@ class P2PDemoVC: BaseDemoVC {
         btn.frame = CGRectMake(10, (field.frame.maxY + 10), 300, 40)
         btn.backgroundColor = btnColor
         btn.addTarget(self, action: #selector(btnClick), for: .touchUpInside)
-        self.view.addSubview(btn)
+        self.baseContentView.addSubview(btn)
+        
+        self.updateMaxContentSize()
     }
     
     @objc func btnClick() {

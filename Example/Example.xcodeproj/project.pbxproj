@@ -18,7 +18,6 @@
 		570A475E2C9EA76F008FF5E7 /* ExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570A475D2C9EA76F008FF5E7 /* ExampleUITestsLaunchTests.swift */; };
 		5734A6762C9EA82500AC6CE1 /* AuthDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734A66E2C9EA82500AC6CE1 /* AuthDemoVC.swift */; };
 		5734A6772C9EA82500AC6CE1 /* BaseDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734A66F2C9EA82500AC6CE1 /* BaseDemoVC.swift */; };
-		5734A6782C9EA82500AC6CE1 /* FullDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734A6702C9EA82500AC6CE1 /* FullDemoVC.swift */; };
 		5734A6792C9EA82500AC6CE1 /* GroupAlianNameDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734A6712C9EA82500AC6CE1 /* GroupAlianNameDemoVC.swift */; };
 		5734A67A2C9EA82500AC6CE1 /* GroupShareLinkDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734A6722C9EA82500AC6CE1 /* GroupShareLinkDemoVC.swift */; };
 		5734A67B2C9EA82500AC6CE1 /* OTCDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734A6732C9EA82500AC6CE1 /* OTCDemoVC.swift */; };
@@ -60,7 +59,6 @@
 		570A475D2C9EA76F008FF5E7 /* ExampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		5734A66E2C9EA82500AC6CE1 /* AuthDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthDemoVC.swift; sourceTree = "<group>"; };
 		5734A66F2C9EA82500AC6CE1 /* BaseDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseDemoVC.swift; sourceTree = "<group>"; };
-		5734A6702C9EA82500AC6CE1 /* FullDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullDemoVC.swift; sourceTree = "<group>"; };
 		5734A6712C9EA82500AC6CE1 /* GroupAlianNameDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupAlianNameDemoVC.swift; sourceTree = "<group>"; };
 		5734A6722C9EA82500AC6CE1 /* GroupShareLinkDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupShareLinkDemoVC.swift; sourceTree = "<group>"; };
 		5734A6732C9EA82500AC6CE1 /* OTCDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OTCDemoVC.swift; sourceTree = "<group>"; };
@@ -153,7 +151,6 @@
 			children = (
 				5734A66E2C9EA82500AC6CE1 /* AuthDemoVC.swift */,
 				5734A66F2C9EA82500AC6CE1 /* BaseDemoVC.swift */,
-				5734A6702C9EA82500AC6CE1 /* FullDemoVC.swift */,
 				5734A6712C9EA82500AC6CE1 /* GroupAlianNameDemoVC.swift */,
 				5734A6722C9EA82500AC6CE1 /* GroupShareLinkDemoVC.swift */,
 				5734A6732C9EA82500AC6CE1 /* OTCDemoVC.swift */,
@@ -310,7 +307,6 @@
 				5734A67C2C9EA82500AC6CE1 /* P2PDemoVC.swift in Sources */,
 				570A473D2C9EA76D008FF5E7 /* SceneDelegate.swift in Sources */,
 				5734A67F2C9EA82D00AC6CE1 /* Toast.swift in Sources */,
-				5734A6782C9EA82500AC6CE1 /* FullDemoVC.swift in Sources */,
 				5734A6762C9EA82500AC6CE1 /* AuthDemoVC.swift in Sources */,
 				57451DE42C9EA8B000AF36C5 /* OCSIMManager.swift in Sources */,
 			);

@@ -8,6 +8,9 @@
 
 import Foundation
 import UIKit
+import CryptoKit
+import CommonCrypto
+
 // 参考文档： https://storage.googleapis.com/e68-package-dev/install/testJump.html
 /**
   * 为了能回调到三方自己app里，三方app需要配置一个scheme，方便OSIM能回调返回（三方授权的场景）
@@ -104,7 +107,7 @@ public class OCSIMManager {
         case identify(identify: String) // 跳转XX号添加好友（已经是好友直接进入单聊页面）
         case groupShareLink(groupShareLink: String) // 通过群分享链加入群（如果已经在群里直接进入群）
         case groupAlianName(groupAlianName: String) // 通过群别名跳转加入群（如果已经在群里直接进入群）
-        case auth(clientId: String, redirectUri: String? = nil) // 去授权
+        case auth(clientId: String, codeChallenge: String, redirectUri: String? = nil) // 去授权
         case otc(type: OTCType, subType: OTCSubType? = nil, coinName: String? = nil) // 进入OTC功能页面
         
         var pagePath: (String, [String: String]?) {
@@ -118,10 +121,10 @@ public class OCSIMManager {
             case .groupAlianName(let alianName):
                 // 群别名
                 return ("page/atLink?words=\(alianName)", nil)
-            case .auth(let clientId, let redirectUri):
+            case .auth(let clientId, let codeChallenge, let redirectUri):
                 // 进入授权页面
                 // 保证每个回调地址都有区别
-                return ("page/auth?clientId=\(clientId)", ["redirectUri": redirectUri?.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""])
+                return ("page/auth?clientId=\(clientId)&codeChallenge=\(codeChallenge)", ["redirectUri": redirectUri?.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""])
             case .otc(let type, let subType, let coinName):
                 // 进入otc页面
                 var path = "page/otc?type=\(type.typeCode)"
@@ -152,7 +155,7 @@ public class OCSIMManager {
         let (pagePath, urlParams) = page.pagePath
         var urlPath = "\(app.scheme(page: page))\(env.envPath)/\(pagePath)"
         switch page {
-        case .auth(let _, let redirectUri):
+        case .auth(_, _, let redirectUri):
             let urlStr = redirectUri?.trimmingCharacters(in: .whitespaces) ?? ""
             if urlStr.count == 0 {
                 print("必须要包含协议头和路径xxx://xxx")
@@ -508,5 +511,68 @@ public class UrlTool {
             return []
         }
         return Array(list[from...toIndex])
+    }
+}
+public struct OCSIMPKCE {
+    
+    /// A high-entropy cryptographic random value, as described in [Section 4.1](https://datatracker.ietf.org/doc/html/rfc7636#section-4.1) of the PKCE standard.
+    public let codeVerifier: String
+    
+    /// A transformation of the codeVerifier, as defined in [Section 4.2](https://datatracker.ietf.org/doc/html/rfc7636#section-4.2) of the PKCE standard.
+    public let codeChallenge: String
+    
+    public init() {
+        
+        codeVerifier = OCSIMPKCE.generateCodeVerifier()
+        codeChallenge = OCSIMPKCE.codeChallenge(fromVerifier: codeVerifier)
+    }
+    
+    static func codeChallenge(fromVerifier verifier: String) -> String {
+        
+        guard let verifierData = verifier.data(using: .ascii) else {
+            return ""
+        }
+        
+        let challengeHashed = SHA256.hash(data: verifierData)
+        let challengeBase64Encoded = OCSIMPKCE.base64URLEncodedString(inputData: Data(challengeHashed))
+        
+        return challengeBase64Encoded
+    }
+    
+    static func generateCodeVerifier() -> String {
+        
+        let rando = OCSIMPKCE.generateCryptographicallySecureRandomOctets(count: 32)
+        if rando.isEmpty {
+            return generateBase64RandomString(ofLength: 43)
+        } else {
+            return OCSIMPKCE.base64URLEncodedString(inputData: Data(bytes: rando, count: rando.count))
+        }
+    }
+    
+    private static func generateCryptographicallySecureRandomOctets(count: Int) -> [UInt8] {
+        
+        var octets = [UInt8](repeating: 0, count: count)
+        let status = SecRandomCopyBytes(kSecRandomDefault, octets.count, &octets)
+        
+        if status == errSecSuccess {
+            return octets
+        } else {
+            return []
+        }
+    }
+    
+    private static func generateBase64RandomString(ofLength length: UInt8) -> String {
+        
+        let base64 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return String((0..<length).map{ _ in base64.randomElement()! })
+    }
+    
+    static func base64URLEncodedString(inputData: Data) -> String {
+        let str = inputData.base64EncodedString()
+            .replacingOccurrences(of: "=", with: "") // Remove any trailing '='s
+            .replacingOccurrences(of: "+", with: "-") // 62nd char of encoding
+            .replacingOccurrences(of: "/", with: "_") // 63rd char of encoding
+            .trimmingCharacters(in: .whitespaces)
+        return str
     }
 }

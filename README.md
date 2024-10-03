@@ -63,14 +63,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 ```
 @objc func btnClick() {
     // 默认跳转到68、生产环境
-    // appKey: 为第1步找相关人员申请到的值
-    // callbackUrl: 为3布配置的scheme或已有的scheme
-    OCSIMManager.shared.jump(goTo: .auth(clientId: "xxxx", redirectUri: "xxxx://"), handler: {[weak self] dict in
+    // clientId: 为第1步找相关人员申请到的值
+    // redirectUri: 为3布配置的scheme或已有的scheme
+    // codeChallenge: 生成一个随机数然后使用sha256加密后的值，可以使用demo里的OCSIMPKCE()生成
+    let pk = OCSIMPKCE()
+    let codeChallenge = pk.codeChallenge
+    OCSIMManager.shared.jump(goTo: .auth(clientId: "xxxx", codeChallenge: codeChallenge, redirectUri: "xxxx://"), handler: {[weak self] dict in
         self?.codeLabel.text = "授权code：\(dict["code"]  ?? "")"
         print(dict)
     })
 }
 ```
+
+#### 6、拿到授权code后，使用生成的随机数`codeVerifier` + 三方授权后返回的`code`,请求自己的服务器，自己的服务器请求三方服务器，拿到`access_token`，拿到`access_token`后再请求其他信息
 ----
 ![video](authApp.mp4)
 

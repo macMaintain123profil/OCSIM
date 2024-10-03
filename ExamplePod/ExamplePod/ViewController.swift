@@ -14,8 +14,7 @@ class ViewController: UIViewController, UITableViewDataSource,UITableViewDelegat
         ("68号加好友demo", P2PDemoVC.self),
         ("群分享链接进入群聊demo", GroupShareLinkDemoVC.self),
         ("群别名进入群聊demo", GroupAlianNameDemoVC.self),
-        ("otc展示demo", OTCDemoVC.self),
-        ("综合demo", FullDemoVC.self),
+        ("otc展示demo", OTCDemoVC.self)
     ]
     lazy var tableView: UITableView = {
         let v = UITableView(frame: UIScreen.main.bounds, style: .grouped)
