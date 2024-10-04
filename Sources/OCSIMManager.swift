@@ -107,7 +107,7 @@ public class OCSIMManager {
         case identify(identify: String) // 跳转XX号添加好友（已经是好友直接进入单聊页面）
         case groupShareLink(groupShareLink: String) // 通过群分享链加入群（如果已经在群里直接进入群）
         case groupAlianName(groupAlianName: String) // 通过群别名跳转加入群（如果已经在群里直接进入群）
-        case auth(clientId: String, codeChallenge: String, redirectUri: String? = nil) // 去授权
+        case auth(clientId: String, code_challenge: String, redirectUri: String? = nil) // 去授权
         case otc(type: OTCType, subType: OTCSubType? = nil, coinName: String? = nil) // 进入OTC功能页面
         
         var pagePath: (String, [String: String]?) {
@@ -121,10 +121,10 @@ public class OCSIMManager {
             case .groupAlianName(let alianName):
                 // 群别名
                 return ("page/atLink?words=\(alianName)", nil)
-            case .auth(let clientId, let codeChallenge, let redirectUri):
+            case .auth(let clientId, let code_challenge, let redirectUri):
                 // 进入授权页面
                 // 保证每个回调地址都有区别
-                return ("page/auth?clientId=\(clientId)&codeChallenge=\(codeChallenge)", ["redirectUri": redirectUri?.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""])
+                return ("page/auth?clientId=\(clientId)&code_challenge=\(code_challenge)", ["redirectUri": redirectUri?.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""])
             case .otc(let type, let subType, let coinName):
                 // 进入otc页面
                 var path = "page/otc?type=\(type.typeCode)"

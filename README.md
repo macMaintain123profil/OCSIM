@@ -68,7 +68,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // codeChallenge: 生成一个随机数然后使用sha256加密后的值，可以使用demo里的OCSIMPKCE()生成
     let pk = OCSIMPKCE()
     let codeChallenge = pk.codeChallenge
-    OCSIMManager.shared.jump(goTo: .auth(clientId: "xxxx", codeChallenge: codeChallenge, redirectUri: "xxxx://"), handler: {[weak self] dict in
+    OCSIMManager.shared.jump(goTo: .auth(clientId: "xxxx", code_challenge: codeChallenge, redirectUri: "xxxx://"), handler: {[weak self] dict in
         self?.codeLabel.text = "授权code：\(dict["code"]  ?? "")"
         print(dict)
     })

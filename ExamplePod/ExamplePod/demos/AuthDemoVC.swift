@@ -16,7 +16,6 @@ class AuthDemoVC: BaseDemoVC {
     let demoLabel = UILabel()
     let btn = UIButton(type: .custom)
     let cpBtn = UIButton(type: .custom)
-    let schemeLabel = UILabel()
     
     // 生成的随机数，用于后续发送到自己的后端请求accessToken
     var codeVerifier: String = ""
@@ -53,21 +52,20 @@ class AuthDemoVC: BaseDemoVC {
         
         demoLabel.textColor = .black
         demoLabel.font = UIFont.systemFont(ofSize: 14)
-        demoLabel.frame = CGRect(x: 10, y: (field2.frame.maxY + 10), width: 300, height: 20)
+        
         demoLabel.numberOfLines = 0
-        demoLabel.text = "redirectUri格式： xxx://yyy"
+        demoLabel.text = "redirectUri格式： xxx://yyy\n\n当前App配置的scheme列表\n\(schemeList())"
+        let maxWdith = UIScreen.main.bounds.width-20
+        let maxSize = CGSize(width: maxWdith, height: CGFloat.greatestFiniteMagnitude)
+        let realHeight = (demoLabel.text ?? "").boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: demoLabel.font ?? UIFont.systemFont(ofSize: 14)], context: nil).size.height
+        demoLabel.frame = CGRect(x: 10, y: (field2.frame.maxY + 10), width: maxWdith, height: realHeight)
         self.baseContentView.addSubview(demoLabel)
         
-        resultLabel.textColor = .lightGray
-        resultLabel.font = UIFont.systemFont(ofSize: 14)
-        resultLabel.frame = CGRect(x: 10, y: (demoLabel.frame.maxY + 10), width: UIScreen.main.bounds.width-20, height: 350)
-        resultLabel.numberOfLines = 0
-        self.baseContentView.addSubview(resultLabel)
-        
+       
         btn.setTitle("去三方授权", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.numberOfLines = 0
-        btn.frame = CGRectMake(10, (resultLabel.frame.maxY + 10), 300, 40)
+        btn.frame = CGRectMake(10, (demoLabel.frame.maxY + 10), 300, 40)
         btn.backgroundColor = btnColor
         btn.addTarget(self, action: #selector(btnClick), for: .touchUpInside)
         self.baseContentView.addSubview(btn)
@@ -80,6 +78,17 @@ class AuthDemoVC: BaseDemoVC {
         cpBtn.addTarget(self, action: #selector(cpBtnClick), for: .touchUpInside)
         self.baseContentView.addSubview(cpBtn)
         
+        resultLabel.textColor = .lightGray
+        resultLabel.font = UIFont.systemFont(ofSize: 14)
+        resultLabel.frame = CGRect(x: 10, y: (cpBtn.frame.maxY + 10), width: UIScreen.main.bounds.width-20, height: 350)
+        resultLabel.numberOfLines = 0
+        self.baseContentView.addSubview(resultLabel)
+
+        
+        refreshUI()
+    }
+    
+    func schemeList() -> String {
         let infoDictionary = Bundle.main.infoDictionary
         var urlSchemeList: [String] = []
         if let urlTypes = infoDictionary?["CFBundleURLTypes"] as? [[String: Any]], urlTypes.count > 0 {
@@ -89,20 +98,7 @@ class AuthDemoVC: BaseDemoVC {
                 }
             }
         }
-        
-        schemeLabel.textColor = .black
-        schemeLabel.font = UIFont.systemFont(ofSize: 14)
-        schemeLabel.frame = CGRect(x: 10, y: (cpBtn.frame.maxY + 10), width: 300, height: 100)
-        schemeLabel.numberOfLines = 0
-        if urlSchemeList.count > 0 {
-            schemeLabel.text = "当前App配置的scheme：\n\n\(urlSchemeList.map({"\($0)://"}).joined(separator: "\n"))"
-        } else {
-            schemeLabel.text = "当前App还没配置任何scheme"
-        }
-        
-        self.baseContentView.addSubview(schemeLabel)
-        
-        refreshUI()
+        return urlSchemeList.map({"\($0)://"}).joined(separator: "\n")
     }
     
     func refreshUI() {
@@ -115,11 +111,7 @@ class AuthDemoVC: BaseDemoVC {
             let maxWdith = UIScreen.main.bounds.width-20
             let maxSize = CGSize(width: maxWdith, height: CGFloat.greatestFiniteMagnitude)
             let realHeight = nStr.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: self.resultLabel.font ?? UIFont.systemFont(ofSize: 14)], context: nil).size.height
-            self.resultLabel.frame = CGRect(x: 10, y: (self.demoLabel.frame.maxY + 10), width: maxWdith, height: realHeight)
-            self.btn.frame = CGRectMake(10, (self.resultLabel.frame.maxY + 10), 300, 40)
-            self.cpBtn.frame = CGRectMake(10, (self.btn.frame.maxY + 10), 300, 40)
-            self.schemeLabel.frame = CGRect(x: 10, y: (self.cpBtn.frame.maxY + 10), width: 300, height: 100)
-            
+            self.resultLabel.frame = CGRect(x: 10, y: (self.cpBtn.frame.maxY + 10), width: maxWdith, height: realHeight)
             self.updateMaxContentSize()
         })
     }
@@ -156,7 +148,7 @@ class AuthDemoVC: BaseDemoVC {
             return
         }
         
-        OCSIMManager.shared.jump(app: appType, env: envType, goTo: .auth(clientId: clientId, codeChallenge: codeChallenge, redirectUri: redirectUri), handler: {[weak self] dict in
+        OCSIMManager.shared.jump(app: appType, env: envType, goTo: .auth(clientId: clientId, code_challenge: codeChallenge, redirectUri: redirectUri), handler: {[weak self] dict in
             self?.code = dict["code"] ?? ""
             self?.refreshUI()
             self?.testReq()
