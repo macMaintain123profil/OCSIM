@@ -24,6 +24,7 @@
 		57451E2E2C9EAAF300AF36C5 /* OTCDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57451E262C9EAAF300AF36C5 /* OTCDemoVC.swift */; };
 		57451E2F2C9EAAF300AF36C5 /* P2PDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57451E272C9EAAF300AF36C5 /* P2PDemoVC.swift */; };
 		57451E322C9EAAFD00AF36C5 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57451E302C9EAAFD00AF36C5 /* Toast.swift */; };
+		62D1B4CF2CAFAF6C0039696E /* AccessTokenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1B4CE2CAFAF6C0039696E /* AccessTokenVC.swift */; };
 		9BAEDC498C62E44407FD8F44 /* Pods_ExamplePodTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9633E56053978E2EA34FC917 /* Pods_ExamplePodTests.framework */; };
 		9C132042B7C8E1480EBD55F3 /* Pods_ExamplePod_ExamplePodUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054736DEE732893810A358C6 /* Pods_ExamplePod_ExamplePodUITests.framework */; };
 /* End PBXBuildFile section */
@@ -72,6 +73,7 @@
 		57451E262C9EAAF300AF36C5 /* OTCDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OTCDemoVC.swift; sourceTree = "<group>"; };
 		57451E272C9EAAF300AF36C5 /* P2PDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = P2PDemoVC.swift; sourceTree = "<group>"; };
 		57451E302C9EAAFD00AF36C5 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		62D1B4CE2CAFAF6C0039696E /* AccessTokenVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessTokenVC.swift; sourceTree = "<group>"; };
 		9633E56053978E2EA34FC917 /* Pods_ExamplePodTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExamplePodTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D80AD17459BF26643B53DA02 /* Pods-ExamplePod.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExamplePod.release.xcconfig"; path = "Target Support Files/Pods-ExamplePod/Pods-ExamplePod.release.xcconfig"; sourceTree = "<group>"; };
 		E5F6625CD388046F0F7DB6B3 /* Pods_ExamplePod.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExamplePod.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -192,6 +194,7 @@
 				57451E252C9EAAF300AF36C5 /* GroupShareLinkDemoVC.swift */,
 				57451E262C9EAAF300AF36C5 /* OTCDemoVC.swift */,
 				57451E272C9EAAF300AF36C5 /* P2PDemoVC.swift */,
+				62D1B4CE2CAFAF6C0039696E /* AccessTokenVC.swift */,
 			);
 			path = demos;
 			sourceTree = "<group>";
@@ -448,6 +451,7 @@
 				57451E2D2C9EAAF300AF36C5 /* GroupShareLinkDemoVC.swift in Sources */,
 				57451DF22C9EA9B700AF36C5 /* AppDelegate.swift in Sources */,
 				57451E2C2C9EAAF300AF36C5 /* GroupAlianNameDemoVC.swift in Sources */,
+				62D1B4CF2CAFAF6C0039696E /* AccessTokenVC.swift in Sources */,
 				57451E2A2C9EAAF300AF36C5 /* BaseDemoVC.swift in Sources */,
 				57451E2F2C9EAAF300AF36C5 /* P2PDemoVC.swift in Sources */,
 				57451DF42C9EA9B700AF36C5 /* SceneDelegate.swift in Sources */,

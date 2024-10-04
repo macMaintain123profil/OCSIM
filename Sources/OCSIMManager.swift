@@ -527,7 +527,7 @@ public struct OCSIMPKCE {
         codeChallenge = OCSIMPKCE.codeChallenge(fromVerifier: codeVerifier)
     }
     
-    static func codeChallenge(fromVerifier verifier: String) -> String {
+    public static func codeChallenge(fromVerifier verifier: String) -> String {
         
         guard let verifierData = verifier.data(using: .ascii) else {
             return ""

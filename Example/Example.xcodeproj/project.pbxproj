@@ -24,6 +24,7 @@
 		5734A67C2C9EA82500AC6CE1 /* P2PDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734A6742C9EA82500AC6CE1 /* P2PDemoVC.swift */; };
 		5734A67F2C9EA82D00AC6CE1 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5734A67D2C9EA82D00AC6CE1 /* Toast.swift */; };
 		57451DE42C9EA8B000AF36C5 /* OCSIMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57451DE32C9EA8B000AF36C5 /* OCSIMManager.swift */; };
+		62D1B4D12CAFB00B0039696E /* AccessTokenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1B4D02CAFB00B0039696E /* AccessTokenVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		5734A6742C9EA82500AC6CE1 /* P2PDemoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = P2PDemoVC.swift; sourceTree = "<group>"; };
 		5734A67D2C9EA82D00AC6CE1 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		57451DE32C9EA8B000AF36C5 /* OCSIMManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OCSIMManager.swift; path = ../../Sources/OCSIMManager.swift; sourceTree = "<group>"; };
+		62D1B4D02CAFB00B0039696E /* AccessTokenVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessTokenVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 				5734A6722C9EA82500AC6CE1 /* GroupShareLinkDemoVC.swift */,
 				5734A6732C9EA82500AC6CE1 /* OTCDemoVC.swift */,
 				5734A6742C9EA82500AC6CE1 /* P2PDemoVC.swift */,
+				62D1B4D02CAFB00B0039696E /* AccessTokenVC.swift */,
 			);
 			path = demos;
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 				570A473D2C9EA76D008FF5E7 /* SceneDelegate.swift in Sources */,
 				5734A67F2C9EA82D00AC6CE1 /* Toast.swift in Sources */,
 				5734A6762C9EA82500AC6CE1 /* AuthDemoVC.swift in Sources */,
+				62D1B4D12CAFB00B0039696E /* AccessTokenVC.swift in Sources */,
 				57451DE42C9EA8B000AF36C5 /* OCSIMManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

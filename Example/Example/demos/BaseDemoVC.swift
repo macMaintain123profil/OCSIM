@@ -42,23 +42,27 @@ class BaseDemoVC: UIViewController {
         baseScrollView.addSubview(baseContentView)
         baseScrollView.contentSize = baseContentView.bounds.size
         
-        topLabel.textColor = .black
-        topLabel.textAlignment = .center
-        topLabel.frame = CGRect(x: 0, y: 100, width: UIScreen.main.bounds.width, height: 30)
-        baseContentView.addSubview(topLabel)
-        
-        appBtnList = self.createSelectBtns(y: 150, btnW: 60, tips: "选择要跳转的app类型", list:
-                                            [(OCSIMManager.AppType.app68.rawValue,"68"),
-                                             (OCSIMManager.AppType.app4e.rawValue,"4e")])
-        
-        envBtnList = self.createSelectBtns(y: (appBtnList.first?.frame.maxY ?? 0 + 10), btnW: 100, tips: "选择要跳转的环境类型", list:
-                                            [(OCSIMManager.EnvType.pro.rawValue,"线上环境"),
-                                             (OCSIMManager.EnvType.uat.rawValue,"UAT环境"),
-                                             (OCSIMManager.EnvType.test.rawValue,"测试环境")], defaultIdx: 2)
+        addCommonTop()
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapView))
         self.baseContentView.addGestureRecognizer(tap)
         
+    }
+    
+    func addCommonTop() {
+        topLabel.textColor = .black
+                topLabel.textAlignment = .center
+                topLabel.frame = CGRect(x: 0, y: 100, width: UIScreen.main.bounds.width, height: 30)
+                baseContentView.addSubview(topLabel)
+                
+                appBtnList = self.createSelectBtns(y: 150, btnW: 60, tips: "选择要跳转的app类型", list:
+                                                    [(OCSIMManager.AppType.app68.rawValue,"68"),
+                                                     (OCSIMManager.AppType.app4e.rawValue,"4e")])
+                
+                envBtnList = self.createSelectBtns(y: (appBtnList.first?.frame.maxY ?? 0 + 10), btnW: 100, tips: "选择要跳转的环境类型", list:
+                                                    [(OCSIMManager.EnvType.pro.rawValue,"线上环境"),
+                                                     (OCSIMManager.EnvType.uat.rawValue,"UAT环境"),
+                                                     (OCSIMManager.EnvType.test.rawValue,"测试环境")], defaultIdx: 2)
     }
     
     func updateMaxContentSize() {
