@@ -235,7 +235,8 @@ class AuthDemoVC: BaseDemoVC {
 
         // Prepare the form data
         var paramsDict: [String: String] = [:]
-        paramsDict["client_id"] = field.text ?? ""
+        let client_id = field.text ?? ""
+        paramsDict["client_id"] = client_id
         paramsDict["code_verifier"] = code_verifier
         paramsDict["grant_type"] = "authorization_code"
         paramsDict["redirect_uri"] = field2.text ?? ""
@@ -258,7 +259,7 @@ class AuthDemoVC: BaseDemoVC {
             body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
             return body
         }()
-        let username = "pkce-puke"
+        let username = client_id
         let password = "123456"
         let loginString = "\(username):\(password)"
         let loginData = loginString.data(using: .utf8)

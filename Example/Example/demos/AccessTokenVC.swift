@@ -119,7 +119,8 @@ class AccessTokenVC: BaseDemoVC {
 
         // Prepare the form data
         var paramsDict: [String: String] = [:]
-        paramsDict["client_id"] = (parmas["clientId"] ?? parmas["client_id"]) ?? ""
+        let client_id = (parmas["clientId"] ?? parmas["client_id"]) ?? ""
+        paramsDict["client_id"] = client_id
         paramsDict["code_verifier"] = (parmas["codeVerifier"] ?? parmas["code_verifier"]) ?? ""
         paramsDict["grant_type"] = "authorization_code"
         paramsDict["redirect_uri"] = (parmas["redirectUri"] ?? parmas["redirect_uri"]) ?? ""
@@ -142,7 +143,7 @@ class AccessTokenVC: BaseDemoVC {
             return body
         }()
         print(paramsDict)
-        let username = "pkce-puke"
+        let username = client_id
         let password = "123456"
         let loginString = "\(username):\(password)"
         let loginData = loginString.data(using: .utf8)
