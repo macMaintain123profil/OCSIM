@@ -142,7 +142,13 @@ class AccessTokenVC: BaseDemoVC {
             body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
             return body
         }()
-
+        print(paramsDict)
+        let username = "pkce-puke"
+        let password = "123456"
+        let loginString = "\(username):\(password)"
+        let loginData = loginString.data(using: .utf8)
+        let base64LoginString = loginData?.base64EncodedString() ?? ""
+        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
         request.httpBody = httpBody
 
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in

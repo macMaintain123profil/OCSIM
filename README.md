@@ -66,16 +66,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // clientId: 为第1步找相关人员申请到的值
     // redirectUri: 为3布配置的scheme或已有的scheme
     // codeChallenge: 生成一个随机数然后使用sha256加密后的值，可以使用demo里的OCSIMPKCE()生成
+    // uniqueId: 用于回调时作为参数返回，方便反向查找到code_verifier, uniquedId-code_verifier-codeChallenge-code,这4个是一一对应关系，uniquedId-code_verifier-codeChallenge由自己的服务端生成，code由授权的ocsim服务端生成
     let pk = OCSIMPKCE()
     let codeChallenge = pk.codeChallenge
-    OCSIMManager.shared.jump(goTo: .auth(clientId: "xxxx", code_challenge: codeChallenge, redirectUri: "xxxx://"), handler: {[weak self] dict in
-        self?.codeLabel.text = "授权code：\(dict["code"]  ?? "")"
+    OCSIMManager.shared.jump(goTo: .auth(clientId: "xxxx", code_challenge: codeChallenge, uniqueId: "xxx", redirectUri: "xxxx://"), handler: {[weak self] dict in
         print(dict)
+        let code = dict["code"] ?? ""
+        let unique_id = dict["unique_id"] ?? ""
+        self?.mockTestAccessToekenReq(uniqueId: unique_id, code: code)
+        
     })
+    func mockTestAccessToekenReq(uniqueId: String, code: String) {
+        // 模拟自己的服务器逻辑
+        // 模拟通过uniqueId反向找到code_verifier
+        let code_verifier = UserDefaults().string(forKey: "codeVerifier_\(uniqueId)") ?? ""
+        // 自己的服务端 拿着code_verifier、code去ocsim的服务端请求access_token
+        // xxxx/oauth2/token
+    }
 }
 ```
 
-#### 6、拿到授权code后，使用生成的随机数`codeVerifier` + 三方授权后返回的`code`,请求自己的服务器，自己的服务器请求三方服务器，拿到`access_token`，拿到`access_token`后再请求其他信息
+#### 6、拿到授权`unique_id`、`code后`，请求自己的服务器
+
+#### 7、自己服务器使用`unique_id`找到`code_verifier`，再加上三方授权后返回的`code`,自己的服务器请求三方授权服务器，拿到`access_token`
+
+#### 8、自己服务器拿到`access_token`，后到三方授权服务器再请求用户信息
+
+#### 9、拿到授权用户信息后，再处理自己的业务逻辑
+
 ----
 ![video](authApp.mp4)
 

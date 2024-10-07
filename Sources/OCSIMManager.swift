@@ -107,7 +107,7 @@ public class OCSIMManager {
         case identify(identify: String) // 跳转XX号添加好友（已经是好友直接进入单聊页面）
         case groupShareLink(groupShareLink: String) // 通过群分享链加入群（如果已经在群里直接进入群）
         case groupAlianName(groupAlianName: String) // 通过群别名跳转加入群（如果已经在群里直接进入群）
-        case auth(clientId: String, code_challenge: String, redirectUri: String? = nil) // 去授权
+        case auth(clientId: String, code_challenge: String, uniqueId: String, redirectUri: String) // 去授权
         case otc(type: OTCType, subType: OTCSubType? = nil, coinName: String? = nil) // 进入OTC功能页面
         
         var pagePath: (String, [String: String]?) {
@@ -121,10 +121,10 @@ public class OCSIMManager {
             case .groupAlianName(let alianName):
                 // 群别名
                 return ("page/atLink?words=\(alianName)", nil)
-            case .auth(let clientId, let code_challenge, let redirectUri):
+            case .auth(let clientId, let code_challenge, let uniqueId, let redirectUri):
                 // 进入授权页面
                 // 保证每个回调地址都有区别
-                return ("page/auth?clientId=\(clientId)&code_challenge=\(code_challenge)", ["redirectUri": redirectUri?.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""])
+                return ("page/auth?clientId=\(clientId)&code_challenge=\(code_challenge)&unique_id=\(uniqueId)", ["redirectUri": redirectUri.trimmingCharacters(in: CharacterSet.whitespaces)])
             case .otc(let type, let subType, let coinName):
                 // 进入otc页面
                 var path = "page/otc?type=\(type.typeCode)"
@@ -155,8 +155,8 @@ public class OCSIMManager {
         let (pagePath, urlParams) = page.pagePath
         var urlPath = "\(app.scheme(page: page))\(env.envPath)/\(pagePath)"
         switch page {
-        case .auth(_, _, let redirectUri):
-            let urlStr = redirectUri?.trimmingCharacters(in: .whitespaces) ?? ""
+        case .auth(_, _, _, let redirectUri):
+            let urlStr = redirectUri.trimmingCharacters(in: .whitespaces)
             if urlStr.count == 0 {
                 print("必须要包含协议头和路径xxx://xxx")
                 return
@@ -178,11 +178,18 @@ public class OCSIMManager {
         for (key, val) in (urlParams ?? [:]) {
             if val.count > 0 {
                 urlPath = UrlTool.appendUrlParam(urlStr: urlPath, key: key, val: val)
-                // 如果有回调block，记录回调
-                if key == "redirectUri", let handler = handler {
-                    self.callbackDict[val] = handler
-                }
             }
+        }
+        // 如果有回调block，记录回调
+        if let handler = handler {
+            switch page {
+            case .auth(_, _, let uniqueId, let redirectUri):
+                self.callbackDict["\(uniqueId)\(OCSIMManager.urlSeperator)\(redirectUri)"] = handler
+                break
+            default:
+                break
+            }
+            
         }
         if let url = URL(string: urlPath) {
 //            if UIApplication.shared.canOpenURL(url) {
@@ -203,6 +210,7 @@ public class OCSIMManager {
             print("url :\(urlPath)  is not valid")
         }
     }
+    static private let urlSeperator: String = "_#@#_"
     // MARK: 进入官网下载页面
     private func jumpToWebSite(app: AppType) {
         // 没有没有安装App，进入官网下载App
@@ -258,7 +266,11 @@ public class OCSIMManager {
         var keyList: [String] = []
         // 如果有回调，url里是否包含了回调的标志
         for key in self.callbackDict.keys {
-            if urlStrLower.hasPrefix(key.lowercased()) {
+            let keySepList = key.lowercased().components(separatedBy: OCSIMManager.urlSeperator)
+            let uniqueIdStr = keySepList.first ?? ""
+            let redirectUriStr = keySepList.last ?? ""
+            // urlStr: xxx://xxx?xxx=xxx
+            if urlStrLower.hasPrefix(redirectUriStr), urlStrLower.contains("=\(uniqueIdStr)") {
                 keyList.append(key)
             }
         }
