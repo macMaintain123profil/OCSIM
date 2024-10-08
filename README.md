@@ -66,10 +66,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // clientId: 为第1步找相关人员申请到的值
     // redirectUri: 为3布配置的scheme或已有的scheme
     // codeChallenge: 生成一个随机数然后使用sha256加密后的值，可以使用demo里的OCSIMPKCE()生成
+    // coce_challengeMethod: 生成PCKE的方法
     // uniqueId: 用于回调时作为参数返回，方便反向查找到code_verifier, uniquedId-code_verifier-codeChallenge-code,这4个是一一对应关系，uniquedId-code_verifier-codeChallenge由自己的服务端生成，code由授权的ocsim服务端生成
     let pk = OCSIMPKCE()
     let codeChallenge = pk.codeChallenge
-    OCSIMManager.shared.jump(goTo: .auth(clientId: "xxxx", code_challenge: codeChallenge, uniqueId: "xxx", redirectUri: "xxxx://"), handler: {[weak self] dict in
+    OCSIMManager.shared.jump(goTo: .auth(clientId: xxx, code_challenge: xxx, coce_challengeMethod: xxx, uniqueId: xxx, redirectUri: xxx), handler: {[weak self] dict in
         print(dict)
         let code = dict["code"] ?? ""
         let unique_id = dict["unique_id"] ?? ""

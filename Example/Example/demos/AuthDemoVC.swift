@@ -119,7 +119,7 @@ class AuthDemoVC: BaseDemoVC {
     
     @objc func gbtnClick() {
         self.view.makeToastActivity(.center)
-        mockServerGeneratePKCE(handler:{[weak self] codeChallenge, uniqueId in
+        mockServerGeneratePKCE(handler:{[weak self] codeChallenge, coce_challengeMethod, uniqueId in
             self?.uniqueId = uniqueId
             self?.codeChallenge = codeChallenge
             self?.view.hideToastActivity()
@@ -160,12 +160,12 @@ class AuthDemoVC: BaseDemoVC {
 //        let chanllenge = self.codeChallenge
 //        if chanllenge.count == 0 {
             self.view.makeToastActivity(.center)
-            mockServerGeneratePKCE(handler: {[weak self] codeChallenge, uniqueId in
+            mockServerGeneratePKCE(handler: {[weak self] codeChallenge, coce_challengeMethod, uniqueId in
                 self?.uniqueId = uniqueId
                 self?.codeChallenge = codeChallenge
                 self?.view.hideToastActivity()
                 self?.refreshUI(uniqueId: uniqueId, codeChallenge: codeChallenge, code: nil, accessToken: nil)
-                self?.realJump(clientId: clientId, chanllenge: codeChallenge, uniqueId: uniqueId, redirectUri: redirectUri)
+                self?.realJump(clientId: clientId, chanllenge: codeChallenge, coce_challengeMethod: coce_challengeMethod, uniqueId: uniqueId, redirectUri: redirectUri)
             })
 //        } else {
 //            realJump(clientId: clientId, chanllenge: self.codeChallenge, uniqueId: self.uniqueId, redirectUri: redirectUri)
@@ -175,10 +175,10 @@ class AuthDemoVC: BaseDemoVC {
         
     }
     
-    func realJump(clientId: String, chanllenge: String, uniqueId: String, redirectUri: String) {
+    func realJump(clientId: String, chanllenge: String, coce_challengeMethod: String, uniqueId: String, redirectUri: String) {
         let appType = OCSIMManager.AppType(rawValue: self.appBtnList.first(where: { $0.isSelected })?.tag ?? 0) ?? .app68
         let envType = OCSIMManager.EnvType(rawValue: self.envBtnList.first(where: { $0.isSelected })?.tag ?? 0) ?? .pro
-        OCSIMManager.shared.jump(app: appType, env: envType, goTo: .auth(clientId: clientId, code_challenge: chanllenge, uniqueId: uniqueId, redirectUri: redirectUri), handler: {[weak self] dict in
+        OCSIMManager.shared.jump(app: appType, env: envType, goTo: .auth(clientId: clientId, code_challenge: chanllenge, coce_challengeMethod: coce_challengeMethod, uniqueId: uniqueId, redirectUri: redirectUri), handler: {[weak self] dict in
             guard let self = self else {
                 return
             }
@@ -193,7 +193,7 @@ class AuthDemoVC: BaseDemoVC {
         })
     }
     
-    typealias ServerGenePKCEBlock = (_ codeChallenge: String, _ uniqueId: String) -> Void
+    typealias ServerGenePKCEBlock = (_ codeChallenge: String, _ coce_challengeMethod: String, _ uniqueId: String) -> Void
     func mockServerGeneratePKCE(handler: ServerGenePKCEBlock? = nil) {
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200), execute: {
             let pk = OCSIMPKCE()
@@ -206,7 +206,7 @@ class AuthDemoVC: BaseDemoVC {
                 UserDefaults().synchronize()
             }
             print("=========获取codeChallenge成功=======")
-            handler?(pk.codeChallenge, uniqueId)
+            handler?(pk.codeChallenge, "S256", uniqueId)
         })
     }
     
