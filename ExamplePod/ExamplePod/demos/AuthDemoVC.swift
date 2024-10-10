@@ -11,12 +11,24 @@ import OCSIM
 class AuthDemoVC: BaseDemoVC {
    
     var resultLabel = UILabel()
-    var field = UITextField()
-    var field2 = UITextField()
+    var clientIdField = UITextField()
+    var redirectUriField = UITextField()
+    var scopeField = UITextField()
+    var clientSecretField = UITextField()
     let demoLabel = UILabel()
     let gbtn = UIButton(type: .custom)
     let btn = UIButton(type: .custom)
     let cpBtn = UIButton(type: .custom)
+    
+    var inputClientId: String {
+        return clientIdField.text ?? ""
+    }
+    var inputRedirectUri: String {
+        return redirectUriField.text ?? ""
+    }
+    var inputScope: String {
+        return scopeField.text ?? ""
+    }
     
     var uniqueId: String = ""
     var codeChallenge: String = ""
@@ -26,23 +38,43 @@ class AuthDemoVC: BaseDemoVC {
 
         self.title = "testss"
         
-        field.borderStyle = .roundedRect
-        field.layer.borderWidth = 1.0
-        field.layer.borderColor = UIColor.darkGray.cgColor
-        field.attributedPlaceholder = NSAttributedString(string: "请输入clientId", attributes: [NSAttributedString.Key.foregroundColor : UIColor.gray])
-        field.textColor = .black
-        field.frame = CGRectMake(10, envBtnMaxY + 20, 300, 30)
-        field.backgroundColor = .white
-        self.baseContentView.addSubview(field)
+        let maxWdith = UIScreen.main.bounds.width-20
         
-        field2.borderStyle = .roundedRect
-        field2.layer.borderWidth = 1.0
-        field2.layer.borderColor = UIColor.darkGray.cgColor
-        field2.attributedPlaceholder = NSAttributedString(string: "请输入redirectUri", attributes: [NSAttributedString.Key.foregroundColor : UIColor.gray])
-        field2.textColor = .black
-        field2.frame = CGRectMake(10, field.frame.maxY + 20, 300, 30)
-        field2.backgroundColor = .white
-        self.baseContentView.addSubview(field2)
+        clientIdField.borderStyle = .roundedRect
+        clientIdField.layer.borderWidth = 1.0
+        clientIdField.layer.borderColor = UIColor.darkGray.cgColor
+        clientIdField.attributedPlaceholder = NSAttributedString(string: "请输入clientId，必须", attributes: [NSAttributedString.Key.foregroundColor : UIColor.gray])
+        clientIdField.textColor = .black
+        clientIdField.frame = CGRectMake(10, envBtnMaxY + 20, maxWdith, 30)
+        clientIdField.backgroundColor = .white
+        self.baseContentView.addSubview(clientIdField)
+        
+        redirectUriField.borderStyle = .roundedRect
+        redirectUriField.layer.borderWidth = 1.0
+        redirectUriField.layer.borderColor = UIColor.darkGray.cgColor
+        redirectUriField.attributedPlaceholder = NSAttributedString(string: "请输入redirectUri，必须", attributes: [NSAttributedString.Key.foregroundColor : UIColor.gray])
+        redirectUriField.textColor = .black
+        redirectUriField.frame = CGRectMake(10, clientIdField.frame.maxY + 20, maxWdith, 30)
+        redirectUriField.backgroundColor = .white
+        self.baseContentView.addSubview(redirectUriField)
+        
+        scopeField.borderStyle = .roundedRect
+        scopeField.layer.borderWidth = 1.0
+        scopeField.layer.borderColor = UIColor.darkGray.cgColor
+        scopeField.attributedPlaceholder = NSAttributedString(string: "请输入scope，必须", attributes: [NSAttributedString.Key.foregroundColor : UIColor.gray])
+        scopeField.textColor = .black
+        scopeField.frame = CGRectMake(10, redirectUriField.frame.maxY + 20, maxWdith, 30)
+        scopeField.backgroundColor = .white
+        self.baseContentView.addSubview(scopeField)
+        
+        clientSecretField.borderStyle = .roundedRect
+        clientSecretField.layer.borderWidth = 1.0
+        clientSecretField.layer.borderColor = UIColor.darkGray.cgColor
+        clientSecretField.attributedPlaceholder = NSAttributedString(string: "clientSecret, 非必须，用于测获取accessToken", attributes: [NSAttributedString.Key.foregroundColor : UIColor.gray])
+        clientSecretField.textColor = .black
+        clientSecretField.frame = CGRectMake(10, scopeField.frame.maxY + 20, maxWdith, 30)
+        clientSecretField.backgroundColor = .white
+        self.baseContentView.addSubview(clientSecretField)
         
         
         demoLabel.textColor = .black
@@ -50,10 +82,10 @@ class AuthDemoVC: BaseDemoVC {
         
         demoLabel.numberOfLines = 0
         demoLabel.text = "redirectUri格式： xxx://yyy\n\n当前App配置的scheme列表\n\(schemeList())"
-        let maxWdith = UIScreen.main.bounds.width-20
+        
         let maxSize = CGSize(width: maxWdith, height: CGFloat.greatestFiniteMagnitude)
         let realHeight = (demoLabel.text ?? "").boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: demoLabel.font ?? UIFont.systemFont(ofSize: 14)], context: nil).size.height
-        demoLabel.frame = CGRect(x: 10, y: (field2.frame.maxY + 10), width: maxWdith, height: realHeight)
+        demoLabel.frame = CGRect(x: 10, y: (clientSecretField.frame.maxY + 10), width: maxWdith, height: realHeight)
         self.baseContentView.addSubview(demoLabel)
         
         gbtn.setTitle("模拟请求自己服务器生成codeChallenge", for: .normal)
@@ -135,12 +167,12 @@ class AuthDemoVC: BaseDemoVC {
 //          self?.refreshUI()
 //          self?.testReq()
 //        })
-        let clientId = field.text ?? ""
+        let clientId = inputClientId
         if clientId.count == 0 {
             self.view.makeToast("请输入clientId", position: .center)
             return
         }
-        let redirectUri = field2.text ?? ""
+        let redirectUri = inputRedirectUri
         if redirectUri.count == 0 {
             self.view.makeToast("请输入redirectUri", position: .center)
             return
@@ -179,7 +211,7 @@ class AuthDemoVC: BaseDemoVC {
     func realJump(clientId: String, chanllenge: String, coce_challengeMethod: String, uniqueId: String, redirectUri: String) {
         let appType = OCSIMManager.AppType(rawValue: self.appBtnList.first(where: { $0.isSelected })?.tag ?? 0) ?? .app68
         let envType = OCSIMManager.EnvType(rawValue: self.envBtnList.first(where: { $0.isSelected })?.tag ?? 0) ?? .pro
-        OCSIMManager.shared.jump(app: appType, env: envType, goTo: .auth(clientId: clientId, code_challenge: chanllenge, coce_challengeMethod: coce_challengeMethod, uniqueId: uniqueId, redirectUri: redirectUri), handler: {[weak self] dict in
+        OCSIMManager.shared.jump(app: appType, env: envType, goTo: .auth(clientId: clientId, code_challenge: chanllenge, code_challengeMethod: coce_challengeMethod, scope: inputScope, uniqueId: uniqueId, redirectUri: redirectUri), handler: {[weak self] dict in
             guard let self = self else {
                 return
             }
@@ -228,15 +260,15 @@ class AuthDemoVC: BaseDemoVC {
         
         // Prepare the form data
         var paramsDict: [String: String] = [:]
-        let client_id = field.text ?? ""
+        let client_id = inputClientId
         paramsDict["client_id"] = client_id
         paramsDict["code_verifier"] = code_verifier
         paramsDict["grant_type"] = "authorization_code"
-        paramsDict["redirect_uri"] = field2.text ?? ""
+        paramsDict["redirect_uri"] = inputRedirectUri
         paramsDict["code"] = code
         print(paramsDict)
         
-        HttpHelper.formRequest(url: "\(HttpHelper.host)/oauth2/token", paramsDict: paramsDict, authName: client_id, authPwd: "123456") { [weak self] result, error in
+        HttpHelper.formRequest(url: "\(HttpHelper.host)/sns/oauth2/token", paramsDict: paramsDict, authName: client_id, authPwd: clientSecretField.text ?? "") { [weak self] result, error in
             if let result = result {
                 if let dataDict = result["data"] as? [String: Any] {
                     let accessToken = dataDict["access_token"] as? String
@@ -256,12 +288,12 @@ class AuthDemoVC: BaseDemoVC {
     // MARK: 模拟刷新token
     func mockRefreshToken(accessToken: String) {
         var paramsDict: [String: String] = [:]
-        let client_id = field.text ?? ""
+        let client_id = inputClientId
         paramsDict["grant_type"] = "refresh_token"
         paramsDict["refresh_token"] = accessToken
         print(paramsDict)
         
-        HttpHelper.formRequest(url: "\(HttpHelper.host)/oauth2/refresh_token", paramsDict: paramsDict, authName: client_id, authPwd: "123456") {  result, error in
+        HttpHelper.formRequest(url: "\(HttpHelper.host)/sns/oauth2/refresh_token", paramsDict: paramsDict, authName: client_id, authPwd: inputScope) {  result, error in
             if let result = result {
                 if let dataDict = result["data"] as? [String: Any] {
                     let accessToken = dataDict["access_token"] as? String
@@ -283,7 +315,7 @@ class AuthDemoVC: BaseDemoVC {
         guard let accessToken = accessToken, accessToken.count > 0 else {
             return
         }
-        HttpHelper.bearerTokenRequest(url: "\(HttpHelper.host)/user/userInfo", accessToken: accessToken) {  result, error in
+        HttpHelper.bearerTokenRequest(url: "\(HttpHelper.host)/sns/user/userInfo", accessToken: accessToken) {  result, error in
             if let result = result {
                 if let dataDict = result["data"] as? [String: Any] {
                     print(dataDict)

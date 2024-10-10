@@ -9,7 +9,7 @@ import Foundation
 class HttpHelper {
     public static let shared = HttpHelper()
     
-    static let host = "https://test-biz.68chat.co"
+    static let host = "https://test-gateway.68chat.co"
     
     typealias FromResponseBlock = (_ result: [String: Any]?, _ error: Error? ) -> Void
     var reqDict: [String: URLSessionDataTask] = [:]

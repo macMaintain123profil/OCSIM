@@ -118,7 +118,7 @@ class AccessTokenVC: BaseDemoVC {
         paramsDict["redirect_uri"] = (parmas["redirectUri"] ?? parmas["redirect_uri"]) ?? ""
         paramsDict["code"] = parmas["code"] ?? ""
         
-        HttpHelper.formRequest(url: "\(HttpHelper.host)/oauth2/token", paramsDict: paramsDict, authName: client_id, authPwd: "123456") { [weak self] result, error in
+        HttpHelper.formRequest(url: "\(HttpHelper.host)/sns/oauth2/token", paramsDict: paramsDict, authName: client_id, authPwd: "123456") { [weak self] result, error in
             if let result = result {
                 if let dataDict = result["data"] as? [String: Any] {
                     let accessToken = dataDict["access_token"] as? String
