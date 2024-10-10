@@ -6,6 +6,7 @@
 //
 
 #import "SceneDelegate.h"
+#import <OCSIMOC/OCSIMOCManager.h>
 
 @interface SceneDelegate ()
 
@@ -20,6 +21,15 @@
     // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 }
 
+- (void)scene:(UIScene *)scene openURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts {
+    NSMutableArray<NSURL *> * urls = [NSMutableArray new];
+    for (UIOpenURLContext *item in URLContexts) {
+        if (item.URL != nil) {
+            [urls addObject:item.URL];
+        }
+    }
+    [OCSIMOCManager.sharedInstance handleUrls: urls];
+}
 
 - (void)sceneDidDisconnect:(UIScene *)scene {
     // Called as the scene is being released by the system.

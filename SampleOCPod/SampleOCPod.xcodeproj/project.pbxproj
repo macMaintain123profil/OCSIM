@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		572DD5472CB7D07200D635BD /* AuthDemoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 572DD5462CB7D07200D635BD /* AuthDemoVC.m */; };
+		572DD54A2CB7D11100D635BD /* P2PDemoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 572DD5492CB7D11100D635BD /* P2PDemoVC.m */; };
+		572DD54D2CB7D13000D635BD /* GroupShareLinkDemoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 572DD54C2CB7D13000D635BD /* GroupShareLinkDemoVC.m */; };
+		572DD5502CB7D14000D635BD /* GroupAlianNameDemoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 572DD54F2CB7D14000D635BD /* GroupAlianNameDemoVC.m */; };
+		572DD5532CB7D17100D635BD /* OTCDemoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 572DD5522CB7D17100D635BD /* OTCDemoVC.m */; };
+		572DD5562CB7D17C00D635BD /* AccessTokenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 572DD5552CB7D17C00D635BD /* AccessTokenVC.m */; };
+		572DD5592CB7D47300D635BD /* BaseDemoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 572DD5582CB7D47300D635BD /* BaseDemoVC.m */; };
 		629A5DDA2CB7A9EB0018AF93 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 629A5DD92CB7A9EB0018AF93 /* AppDelegate.m */; };
 		629A5DDD2CB7A9EB0018AF93 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 629A5DDC2CB7A9EB0018AF93 /* SceneDelegate.m */; };
 		629A5DE02CB7A9EB0018AF93 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 629A5DDF2CB7A9EB0018AF93 /* ViewController.m */; };
@@ -43,6 +50,20 @@
 		231D93AE246029A233E3D8A3 /* Pods-SampleOCPod-SampleOCPodUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleOCPod-SampleOCPodUITests.debug.xcconfig"; path = "Target Support Files/Pods-SampleOCPod-SampleOCPodUITests/Pods-SampleOCPod-SampleOCPodUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		2C4AC5399CBA0A2C43B7AFAE /* Pods_SampleOCPodTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleOCPodTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		426E3EACF62A4359D7107306 /* Pods-SampleOCPod-SampleOCPodUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleOCPod-SampleOCPodUITests.release.xcconfig"; path = "Target Support Files/Pods-SampleOCPod-SampleOCPodUITests/Pods-SampleOCPod-SampleOCPodUITests.release.xcconfig"; sourceTree = "<group>"; };
+		572DD5452CB7D07200D635BD /* AuthDemoVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthDemoVC.h; sourceTree = "<group>"; };
+		572DD5462CB7D07200D635BD /* AuthDemoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthDemoVC.m; sourceTree = "<group>"; };
+		572DD5482CB7D11100D635BD /* P2PDemoVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P2PDemoVC.h; sourceTree = "<group>"; };
+		572DD5492CB7D11100D635BD /* P2PDemoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = P2PDemoVC.m; sourceTree = "<group>"; };
+		572DD54B2CB7D13000D635BD /* GroupShareLinkDemoVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupShareLinkDemoVC.h; sourceTree = "<group>"; };
+		572DD54C2CB7D13000D635BD /* GroupShareLinkDemoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupShareLinkDemoVC.m; sourceTree = "<group>"; };
+		572DD54E2CB7D14000D635BD /* GroupAlianNameDemoVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GroupAlianNameDemoVC.h; path = SampleOCPod/GroupAlianNameDemoVC.h; sourceTree = SOURCE_ROOT; };
+		572DD54F2CB7D14000D635BD /* GroupAlianNameDemoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GroupAlianNameDemoVC.m; path = SampleOCPod/GroupAlianNameDemoVC.m; sourceTree = SOURCE_ROOT; };
+		572DD5512CB7D17100D635BD /* OTCDemoVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTCDemoVC.h; sourceTree = "<group>"; };
+		572DD5522CB7D17100D635BD /* OTCDemoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTCDemoVC.m; sourceTree = "<group>"; };
+		572DD5542CB7D17C00D635BD /* AccessTokenVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AccessTokenVC.h; sourceTree = "<group>"; };
+		572DD5552CB7D17C00D635BD /* AccessTokenVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AccessTokenVC.m; sourceTree = "<group>"; };
+		572DD5572CB7D47300D635BD /* BaseDemoVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseDemoVC.h; sourceTree = "<group>"; };
+		572DD5582CB7D47300D635BD /* BaseDemoVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseDemoVC.m; sourceTree = "<group>"; };
 		629A5DD52CB7A9EB0018AF93 /* SampleOCPod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleOCPod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		629A5DD82CB7A9EB0018AF93 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		629A5DD92CB7A9EB0018AF93 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -106,6 +127,27 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		572DD5442CB7D05800D635BD /* demos */ = {
+			isa = PBXGroup;
+			children = (
+				572DD5452CB7D07200D635BD /* AuthDemoVC.h */,
+				572DD5462CB7D07200D635BD /* AuthDemoVC.m */,
+				572DD5482CB7D11100D635BD /* P2PDemoVC.h */,
+				572DD5492CB7D11100D635BD /* P2PDemoVC.m */,
+				572DD54B2CB7D13000D635BD /* GroupShareLinkDemoVC.h */,
+				572DD54C2CB7D13000D635BD /* GroupShareLinkDemoVC.m */,
+				572DD54E2CB7D14000D635BD /* GroupAlianNameDemoVC.h */,
+				572DD54F2CB7D14000D635BD /* GroupAlianNameDemoVC.m */,
+				572DD5512CB7D17100D635BD /* OTCDemoVC.h */,
+				572DD5522CB7D17100D635BD /* OTCDemoVC.m */,
+				572DD5542CB7D17C00D635BD /* AccessTokenVC.h */,
+				572DD5552CB7D17C00D635BD /* AccessTokenVC.m */,
+				572DD5572CB7D47300D635BD /* BaseDemoVC.h */,
+				572DD5582CB7D47300D635BD /* BaseDemoVC.m */,
+			);
+			path = demos;
+			sourceTree = "<group>";
+		};
 		629A5DCC2CB7A9EB0018AF93 = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +173,7 @@
 		629A5DD72CB7A9EB0018AF93 /* SampleOCPod */ = {
 			isa = PBXGroup;
 			children = (
+				572DD5442CB7D05800D635BD /* demos */,
 				629A5DD82CB7A9EB0018AF93 /* AppDelegate.h */,
 				629A5DD92CB7A9EB0018AF93 /* AppDelegate.m */,
 				629A5DDB2CB7A9EB0018AF93 /* SceneDelegate.h */,
@@ -414,8 +457,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				572DD5562CB7D17C00D635BD /* AccessTokenVC.m in Sources */,
+				572DD54A2CB7D11100D635BD /* P2PDemoVC.m in Sources */,
+				572DD5472CB7D07200D635BD /* AuthDemoVC.m in Sources */,
+				572DD5502CB7D14000D635BD /* GroupAlianNameDemoVC.m in Sources */,
 				629A5DE02CB7A9EB0018AF93 /* ViewController.m in Sources */,
 				629A5DDA2CB7A9EB0018AF93 /* AppDelegate.m in Sources */,
+				572DD5532CB7D17100D635BD /* OTCDemoVC.m in Sources */,
+				572DD5592CB7D47300D635BD /* BaseDemoVC.m in Sources */,
+				572DD54D2CB7D13000D635BD /* GroupShareLinkDemoVC.m in Sources */,
 				629A5DEB2CB7A9EC0018AF93 /* main.m in Sources */,
 				629A5DDD2CB7A9EB0018AF93 /* SceneDelegate.m in Sources */,
 			);

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1F1D411CE01CEE2C327BD634 /* Pods_ExamplePod.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5F6625CD388046F0F7DB6B3 /* Pods_ExamplePod.framework */; };
+		572DD5432CB7C80800D635BD /* HttpHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572DD5422CB7C80800D635BD /* HttpHelper.swift */; };
 		57451DF22C9EA9B700AF36C5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57451DF12C9EA9B700AF36C5 /* AppDelegate.swift */; };
 		57451DF42C9EA9B700AF36C5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57451DF32C9EA9B700AF36C5 /* SceneDelegate.swift */; };
 		57451DF62C9EA9B700AF36C5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57451DF52C9EA9B700AF36C5 /* ViewController.swift */; };
@@ -53,6 +54,7 @@
 		336190D32773C16E0D48EF0B /* Pods-ExamplePod.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExamplePod.debug.xcconfig"; path = "Target Support Files/Pods-ExamplePod/Pods-ExamplePod.debug.xcconfig"; sourceTree = "<group>"; };
 		4EFC2EDC9F92F376E4C54983 /* Pods-ExamplePodTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExamplePodTests.release.xcconfig"; path = "Target Support Files/Pods-ExamplePodTests/Pods-ExamplePodTests.release.xcconfig"; sourceTree = "<group>"; };
 		56DD49D203DD6784881B2805 /* Pods-ExamplePod-ExamplePodUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExamplePod-ExamplePodUITests.debug.xcconfig"; path = "Target Support Files/Pods-ExamplePod-ExamplePodUITests/Pods-ExamplePod-ExamplePodUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		572DD5422CB7C80800D635BD /* HttpHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpHelper.swift; sourceTree = "<group>"; };
 		57451DEE2C9EA9B700AF36C5 /* ExamplePod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExamplePod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57451DF12C9EA9B700AF36C5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		57451DF32C9EA9B700AF36C5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 				57451E262C9EAAF300AF36C5 /* OTCDemoVC.swift */,
 				57451E272C9EAAF300AF36C5 /* P2PDemoVC.swift */,
 				62D1B4CE2CAFAF6C0039696E /* AccessTokenVC.swift */,
+				572DD5422CB7C80800D635BD /* HttpHelper.swift */,
 			);
 			path = demos;
 			sourceTree = "<group>";
@@ -457,6 +460,7 @@
 				57451DF42C9EA9B700AF36C5 /* SceneDelegate.swift in Sources */,
 				57451E322C9EAAFD00AF36C5 /* Toast.swift in Sources */,
 				57451E292C9EAAF300AF36C5 /* AuthDemoVC.swift in Sources */,
+				572DD5432CB7C80800D635BD /* HttpHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

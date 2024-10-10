@@ -6,6 +6,7 @@
 //
 
 #import "AppDelegate.h"
+#import <OCSIMOC/OCSIMOCManager.h>
 
 @interface AppDelegate ()
 
@@ -16,9 +17,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [OCSIMOCManager.sharedInstance handleUrl: launchOptions[UIApplicationLaunchOptionsURLKey]];
     return YES;
 }
 
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    [OCSIMOCManager.sharedInstance handleUrl: url];
+    return YES;
+}
 
 #pragma mark - UISceneSession lifecycle
 

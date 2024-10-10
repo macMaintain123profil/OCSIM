@@ -223,16 +223,9 @@ class AuthDemoVC: BaseDemoVC {
         UserDefaults().removeObject(forKey: "codeVerifier_\(uniqueId)")
         UserDefaults().removeObject(forKey: "codeChallenge_\(uniqueId)")
         UserDefaults().synchronize()
-        let boundary = UUID().uuidString
-
-        // Create the URL
-        guard let url = URL(string: "http://172.16.20.24:8080/oauth2/token") else { return }
-
-        // Create a URLRequest object
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-
+        
+        
+        
         // Prepare the form data
         var paramsDict: [String: String] = [:]
         let client_id = field.text ?? ""
@@ -242,56 +235,65 @@ class AuthDemoVC: BaseDemoVC {
         paramsDict["redirect_uri"] = field2.text ?? ""
         paramsDict["code"] = code
         print(paramsDict)
-
-        let httpBody = {
-            var body = Data()
-            for (rawName, rawValue) in paramsDict {
-                if !body.isEmpty {
-                    body.append("\r\n".data(using: .utf8)!)
-                }
-                body.append("--\(boundary)\r\n".data(using: .utf8)!)
-                let disposition = "Content-Disposition: form-data; name=\"\(rawName)\"\r\n".data(using: .utf8)!
-                body.append(disposition)
-                body.append("\r\n".data(using: .utf8)!)
-                let value = rawValue.data(using: .utf8)!
-                body.append(value)
-            }
-            body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
-            return body
-        }()
-        let username = client_id
-        let password = "123456"
-        let loginString = "\(username):\(password)"
-        let loginData = loginString.data(using: .utf8)
-        let base64LoginString = loginData?.base64EncodedString() ?? ""
-        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
-        request.httpBody = httpBody
-
-        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-            if let error = error {
-                print("Error: \(error)")
-                return
-            }
-            if let httpResponse = response as? HTTPURLResponse {
-                print("Response Code: \(httpResponse.statusCode)")
-            }
-            if let data = data, let responseString = String(data: data, encoding: .utf8) {
-                print("Response Data: \(responseString)")
-                if let result = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    if let dataDict = result["data"] as? [String: Any] {
-                        let accessToken = dataDict["access_token"] as? String
-                       
-                        self?.refreshUI(uniqueId: uniqueId, codeChallenge: codeChallenge, code: code, accessToken: accessToken)
-                        
-                    } else {
-                        let msg = result["error"] as? String
-                        self?.refreshUI(uniqueId: uniqueId, codeChallenge: codeChallenge, code: code, accessToken: msg)
-                    }
-                    print(result)
-                }
+        
+        HttpHelper.formRequest(url: "\(HttpHelper.host)/oauth2/token", paramsDict: paramsDict, authName: client_id, authPwd: "123456") { [weak self] result, error in
+            if let result = result {
+                if let dataDict = result["data"] as? [String: Any] {
+                    let accessToken = dataDict["access_token"] as? String
+                    self?.refreshUI(uniqueId: uniqueId, codeChallenge: codeChallenge, code: code, accessToken: accessToken)
+                    self?.mockTestGetInfo(accessToken: accessToken)
+                } else {
+                    let msg = result["error"] as? String
+                    self?.refreshUI(uniqueId: uniqueId, codeChallenge: codeChallenge, code: code, accessToken: msg)
+                    
+               }
+            } else {
+                print(error?.localizedDescription ?? "")
             }
         }
-        task.resume()
-
+    }
+    
+    // MARK: 模拟刷新token
+    func mockRefreshToken(accessToken: String) {
+        var paramsDict: [String: String] = [:]
+        let client_id = field.text ?? ""
+        paramsDict["grant_type"] = "refresh_token"
+        paramsDict["refresh_token"] = accessToken
+        print(paramsDict)
+        
+        HttpHelper.formRequest(url: "\(HttpHelper.host)/oauth2/refresh_token", paramsDict: paramsDict, authName: client_id, authPwd: "123456") {  result, error in
+            if let result = result {
+                if let dataDict = result["data"] as? [String: Any] {
+                    let accessToken = dataDict["access_token"] as? String
+                    let refreshToken = dataDict["refresh_token"] as? String
+                    print(accessToken ?? "", refreshToken ?? "")
+                } else {
+                    let msg = result["error"] as? String
+                    print(msg ?? "")
+                    
+               }
+            } else {
+                print(error?.localizedDescription ?? "")
+            }
+        }
+    }
+    
+    // MARK: 模拟服务器请求info
+    func mockTestGetInfo(accessToken: String?) {
+        guard let accessToken = accessToken, accessToken.count > 0 else {
+            return
+        }
+        HttpHelper.bearerTokenRequest(url: "\(HttpHelper.host)/user/userInfo", accessToken: accessToken) {  result, error in
+            if let result = result {
+                if let dataDict = result["data"] as? [String: Any] {
+                    print(dataDict)
+                } else {
+                    let msg = result["error"] as? String
+                    print(msg ?? "")
+               }
+            } else {
+                print(error?.localizedDescription ?? "")
+            }
+        }
     }
 }

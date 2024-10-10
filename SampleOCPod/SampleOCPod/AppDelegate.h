@@ -6,7 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <OCSIMOC/OCSIMOCManager.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

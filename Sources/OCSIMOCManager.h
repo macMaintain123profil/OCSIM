@@ -9,4 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @interface OCSIMOCManager : NSObject
+
++ (instancetype _Nonnull)sharedInstance;
+- (void)handleUrl: (nullable NSURL *)url;
+- (void)handleUrls: (nullable NSArray<NSURL *> *)urls;
+
 @end
