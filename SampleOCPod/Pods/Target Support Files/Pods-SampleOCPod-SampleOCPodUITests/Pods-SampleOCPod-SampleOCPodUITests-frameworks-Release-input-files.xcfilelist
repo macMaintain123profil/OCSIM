@@ -1,0 +1,3 @@
+${PODS_ROOT}/Target Support Files/Pods-SampleOCPod-SampleOCPodUITests/Pods-SampleOCPod-SampleOCPodUITests-frameworks.sh
+${BUILT_PRODUCTS_DIR}/OCSIMOC/OCSIMOC.framework
+${BUILT_PRODUCTS_DIR}/Toast/Toast.framework

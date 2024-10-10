@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name = "OCSIM"
+  s.name = "OCSIMOC"
   s.version = "5.3.6"
   s.summary = "A open IM sdk"
   s.homepage = "https://github.com/macMaintain123profil/OCSIM"
@@ -7,7 +7,8 @@ Pod::Spec.new do |s|
   s.author = { "Charles Scalesse" => "scalessec@gmail.com" }
   s.source = { :git => "https://github.com/macMaintain123profil/OCSIM.git", :tag => "5.1.1" }
   s.platform = :ios
-  s.source_files = 'Sources/**/*.swift'
+  # s.source_files = 'Sources/**/*.{h,m}}'
+  s.source_files = 'Sources/OCSIMOCManager.h', 'Sources/OCSIMOCManager.m'
   s.framework = 'UIKit'
 
   s.ios.deployment_target = '13.0'

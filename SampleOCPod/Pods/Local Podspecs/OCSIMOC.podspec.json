@@ -1,0 +1,24 @@
+{
+  "name": "OCSIMOC",
+  "version": "5.3.6",
+  "summary": "A open IM sdk",
+  "homepage": "https://github.com/macMaintain123profil/OCSIM",
+  "license": "MIT",
+  "authors": {
+    "Charles Scalesse": "scalessec@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/macMaintain123profil/OCSIM.git",
+    "tag": "5.1.1"
+  },
+  "platforms": {
+    "ios": "13.0"
+  },
+  "source_files": [
+    "Sources/OCSIMOCManager.h",
+    "Sources/OCSIMOCManager.m"
+  ],
+  "frameworks": "UIKit",
+  "swift_versions": "5.0",
+  "swift_version": "5.0"
+}

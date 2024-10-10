@@ -1,0 +1,6 @@
+framework module OCSIMOC {
+  umbrella header "OCSIMOC-umbrella.h"
+
+  export *
+  module * { export * }
+}
